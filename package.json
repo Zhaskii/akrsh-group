@@ -1,0 +1,75 @@
+{
+  "name": "thunderboltsfc",
+  "version": "1.0.0",
+  "description": "THUNDERBOLTS FC",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production NODE_OPTIONS=--no-deprecation next build",
+    "dev": "cross-env PORT=3000 NODE_OPTIONS=--no-deprecation next dev",
+    "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
+    "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
+    "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "start": "cross-env NODE_ENV=production NODE_OPTIONS=--no-deprecation next start",
+    "start:prod": "cross-env NODE_ENV=production PORT=${PORT:-8000} NODE_OPTIONS=--no-deprecation next start",
+    "postbuild": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@heroicons/react": "^2.2.0",
+    "@mui/material": "^7.3.8",
+    "@payloadcms/db-mongodb": "3.42.0",
+    "@payloadcms/next": "3.42.0",
+    "@payloadcms/payload-cloud": "3.42.0",
+    "@payloadcms/richtext-lexical": "3.42.0",
+    "@payloadcms/ui": "3.42.0",
+    "axios": "^1.10.0",
+    "cross-env": "^7.0.3",
+    "formik": "^2.4.9",
+    "framer-motion": "^12.34.3",
+    "graphql": "^16.8.1",
+    "lucide-react": "^0.574.0",
+    "next": "^15.5.9",
+    "nodemailer": "^7.0.12",
+    "payload": "3.42.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "react-hot-toast": "^2.6.0",
+    "react-icon": "^1.0.0",
+    "react-icons": "^5.5.0",
+    "sharp": "0.32.6",
+    "swiper": "^12.1.2",
+    "yet-another-react-lightbox": "^3.29.1",
+    "yup": "^1.7.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.2.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/ms": "^2.1.0",
+    "@types/node": "^22.19.3",
+    "@types/nodemailer": "^6.4.14",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.2",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "^15.5.9",
+    "prettier": "^3.4.2",
+    "tailwindcss": "^4",
+    "typescript": "5.7.3"
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0",
+    "pnpm": "^9 || ^10"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
+  },
+  "packageManager": "pnpm@10.0.0+sha512.b8fef5494bd3fe4cbd4edabd0745df2ee5be3e4b0b8b08fa643aa3e4c6702ccc0f00d68fa8a8c9858a735a0032485a44990ed2810526c875e416f001b17df12b"
+}
