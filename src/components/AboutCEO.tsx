@@ -16,6 +16,7 @@ import {
 import PageBanner from '@/components/PageBanner'
 import Link from 'next/link'
 import { gallery, interviews } from '@/constant/ceo.data'
+import ceo from '@/assets/chairman&ceo/rajul-shrestha-ceo-arksh-group.jpg'
 
 export default function AboutCEO() {
   // --- INTERVIEW SLIDESHOW LOGIC ---
@@ -141,7 +142,7 @@ export default function AboutCEO() {
           <div className="flex flex-col lg:flex-row">
             <div className="lg:w-[40%] relative h-112.5 lg:h-auto min-h-125 overflow-hidden group">
               <Image
-                src="https://www.arkshgroup.com/rajul-shrestha-ceo-arksh-group-1.jpg"
+                src={ceo}
                 alt="Rajul Shrestha"
                 fill
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"

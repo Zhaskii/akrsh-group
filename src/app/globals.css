@@ -19,6 +19,14 @@
   }
 }
 
+html,
+body {
+  width: 100%;
+  max-width: 100vw; /* Use viewport width to be strict */
+  overflow-x: hidden;
+  position: relative;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);

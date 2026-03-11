@@ -77,8 +77,8 @@ export default function Header() {
         isOpen ? 'translate-y-0' : scrollDir === 'down' ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
-      {/* TOP BAR */}
-      <div className="hidden md:flex bg-linear-to-r from-[#1a3a6e] via-[#2257A6] to-[#2a6bc4] text-white py-2.5 px-4 md:px-12 flex-col md:flex-row justify-between items-center gap-4">
+      {/* TOP BAR - Added max-width and overflow-x-clip to prevent horizontal scroll while allowing Y-overflow */}
+      <div className="hidden md:flex bg-linear-to-r from-[#1a3a6e] via-[#2257A6] to-[#2a6bc4] text-white py-2.5 px-4 md:px-12 flex-col md:flex-row justify-between items-center gap-4 relative overflow-visible max-w-full">
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center text-[12px] font-medium">
           <a
             href="mailto:info@arkshgroup.com"
@@ -122,9 +122,10 @@ export default function Header() {
                 </a>
 
                 {hasBrands && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                    <div className="bg-white rounded-2xl shadow-2xl p-4 w-72 border border-gray-100 relative">
-                      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45 border-t border-l border-gray-100"></div>
+                  /* Changed z-index to ensure it is above navbar but doesn't push width */
+                  <div className="absolute top-full right-0 mt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-[60]">
+                    <div className="bg-white rounded-2xl shadow-2xl p-4 w-72 border border-gray-100 relative translate-x-1/4 md:translate-x-0">
+                      <div className="absolute -top-1.5 right-6 w-3 h-3 bg-white rotate-45 border-t border-l border-gray-100"></div>
                       <p className="text-[10px] font-bold uppercase tracking-widest text-[#3498db] mb-3">
                         Our Brands
                       </p>

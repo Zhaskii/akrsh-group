@@ -34,8 +34,8 @@ const PILLARS = [
   {
     icon: (
       <svg
-        width="26"
-        height="26"
+        width="24"
+        height="24"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -54,8 +54,8 @@ const PILLARS = [
   {
     icon: (
       <svg
-        width="26"
-        height="26"
+        width="24"
+        height="24"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -75,8 +75,8 @@ const PILLARS = [
   {
     icon: (
       <svg
-        width="26"
-        height="26"
+        width="24"
+        height="24"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
@@ -98,257 +98,251 @@ const PILLARS = [
   },
 ]
 
+const STARS = [
+  { top: '6%', left: '10%', size: 1.5, dur: '4s', delay: '0s', minOp: 0.2, maxOp: 0.8 },
+  { top: '13%', left: '77%', size: 1, dur: '3s', delay: '1s', minOp: 0.1, maxOp: 0.6 },
+  { top: '24%', left: '54%', size: 2, dur: '5s', delay: '0.5s', minOp: 0.15, maxOp: 0.7 },
+  { top: '38%', left: '5%', size: 1.5, dur: '3.5s', delay: '2s', minOp: 0.1, maxOp: 0.5 },
+  { top: '59%', left: '87%', size: 1, dur: '4.5s', delay: '1.5s', minOp: 0.2, maxOp: 0.65 },
+  { top: '71%', left: '21%', size: 2.5, dur: '6s', delay: '0.8s', minOp: 0.1, maxOp: 0.55 },
+  { top: '84%', left: '64%', size: 1, dur: '3s', delay: '3s', minOp: 0.15, maxOp: 0.7 },
+  { top: '4%', left: '39%', size: 1.5, dur: '4s', delay: '0.3s', minOp: 0.1, maxOp: 0.5 },
+  { top: '49%', left: '47%', size: 1, dur: '5s', delay: '2.5s', minOp: 0.1, maxOp: 0.4 },
+  { top: '91%', left: '9%', size: 2, dur: '4s', delay: '1.2s', minOp: 0.15, maxOp: 0.6 },
+  { top: '32%', left: '92%', size: 1, dur: '3.8s', delay: '0.6s', minOp: 0.1, maxOp: 0.5 },
+  { top: '77%', left: '43%', size: 1.5, dur: '4.2s', delay: '1.8s', minOp: 0.12, maxOp: 0.55 },
+]
+
 export default function Arkshism() {
   return (
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Jost:wght@300;400;500;600&display=swap');
 
-        .arkshism-root {
-          font-family: 'Jost', sans-serif;
-        }
-        .display-font { font-family: 'Playfair Display', serif; }
+        .arkshism-root { font-family: 'Jost', sans-serif; }
+        .display-font  { font-family: 'Playfair Display', serif; }
 
-        /* ── Starfield background ── */
+        /* ── Deep space background ── */
         .arkshism-bg {
-      background: linear-gradient(150deg, #1e3a5f 0%, #22426b 40%, #254876 70%, #1a3258 100%);
-          position: relative;
+          background: radial-gradient(ellipse at 20% 20%, #1e3f6e 0%, #152d52 35%, #0d1e38 70%, #080f1e 100%);
         }
+
+        /* Stars */
         .star {
-          position: absolute;
-          border-radius: 50%;
-          background: white;
+          position: absolute; border-radius: 50%; background: white;
           animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
         }
         @keyframes twinkle {
           0%, 100% { opacity: var(--min-op, 0.15); transform: scale(1); }
-          50% { opacity: var(--max-op, 0.7); transform: scale(1.3); }
+          50%       { opacity: var(--max-op, 0.7);  transform: scale(1.4); }
         }
 
-        /* Nebula blobs */
-        .nebula {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(90px);
-          pointer-events: none;
-        }
+        /* Nebula */
+        .nebula { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
 
         /* ── Hero card ── */
         .hero-card {
-          background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-          border: 1px solid rgba(255,255,255,0.08);
-          backdrop-filter: blur(20px);
-          border-radius: 24px;
+          background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+          border: 1px solid rgba(255,255,255,0.09);
+          backdrop-filter: blur(24px);
+          border-radius: 28px;
           position: relative;
           overflow: hidden;
         }
         .hero-card::before {
           content: '';
-          position: absolute;
-          top: 0; left: 50%; transform: translateX(-50%);
-          width: 60%; height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(33,154,234,0.6), transparent);
+          position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+          width: 50%; height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(33,154,234,0.7), transparent);
         }
         .hero-card::after {
           content: '';
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(ellipse at 50% 0%, rgba(33,154,234,0.06) 0%, transparent 70%);
+          position: absolute; inset: 0;
+          background: radial-gradient(ellipse at 50% 0%, rgba(33,154,234,0.07) 0%, transparent 65%);
           pointer-events: none;
         }
 
-        /* Logo glow */
-        .logo-ring {
-          width: 88px; height: 88px;
-          border-radius: 50%;
+        /* Floating badge */
+        .hero-badge {
+          display: inline-flex; align-items: center; gap: 8px;
+          padding: 5px 16px 5px 5px;
+          border-radius: 100px;
+          background: rgba(33,154,234,0.1);
+          border: 1px solid rgba(33,154,234,0.22);
+          margin-bottom: 20px;
+        }
+        .hero-badge-dot {
+          width: 24px; height: 24px; border-radius: 50%;
+          background: linear-gradient(135deg, rgba(33,154,234,0.25), rgba(35,87,166,0.2));
           border: 1px solid rgba(33,154,234,0.3);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .hero-badge-dot span {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: #219AEA;
+          animation: pulse-glow 2.2s ease-in-out infinite;
+        }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(33,154,234,0.5); }
+          50%       { box-shadow: 0 0 0 5px rgba(33,154,234,0); }
+        }
+
+        /* Logo ring */
+        .logo-ring {
+          width: 96px; height: 96px; border-radius: 50%;
+          border: 1px solid rgba(33,154,234,0.28);
           display: flex; align-items: center; justify-content: center;
           position: relative;
         }
         .logo-ring::before {
-          content: '';
-          position: absolute; inset: -5px;
-          border-radius: 50%;
-          border: 1px solid rgba(33,154,234,0.12);
+          content: ''; position: absolute; inset: -6px;
+          border-radius: 50%; border: 1px solid rgba(33,154,234,0.1);
         }
         .logo-ring::after {
-          content: '';
-          position: absolute; inset: -10px;
-          border-radius: 50%;
-          border: 1px solid rgba(33,154,234,0.06);
+          content: ''; position: absolute; inset: -13px;
+          border-radius: 50%; border: 1px solid rgba(33,154,234,0.05);
         }
         .logo-glow {
-          position: absolute; inset: 0;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(33,154,234,0.15), transparent 70%);
+          position: absolute; inset: 0; border-radius: 50%;
+          background: radial-gradient(circle, rgba(33,154,234,0.18), transparent 70%);
         }
 
-        /* Title decoration */
-        .title-word-stars {
-          background: linear-gradient(135deg, #60b8f0, #219AEA, #93d0f8);
+        /* Title gradient */
+        .title-gradient {
+          background: linear-gradient(135deg, #7ec8f5 0%, #219AEA 50%, #a8d8f8 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
-        /* Divider */
-        .ornament-divider {
-          display: flex; align-items: center; gap: 12px; justify-content: center;
-        }
-        .ornament-line {
-          width: 48px; height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(33,154,234,0.5));
-        }
-        .ornament-line.right {
-          background: linear-gradient(90deg, rgba(33,154,234,0.5), transparent);
-        }
-        .ornament-diamond {
-          width: 5px; height: 5px;
-          background: #219AEA;
-          transform: rotate(45deg);
-          border-radius: 1px;
-        }
+        /* Ornament */
+        .ornament-divider { display: flex; align-items: center; gap: 14px; justify-content: center; }
+        .ornament-line { height: 1px; width: 44px; background: linear-gradient(90deg, transparent, rgba(33,154,234,0.45)); }
+        .ornament-line.right { background: linear-gradient(90deg, rgba(33,154,234,0.45), transparent); }
+        .ornament-diamond { width: 5px; height: 5px; background: #219AEA; transform: rotate(45deg); border-radius: 1px;
+          box-shadow: 0 0 8px rgba(33,154,234,0.6); }
 
         /* ── Pillar cards ── */
         .pillar-card {
-          position: relative;
-          border-radius: 20px;
-          overflow: hidden;
-          cursor: pointer;
-          background: linear-gradient(145deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 100%);
+          position: relative; border-radius: 22px; overflow: hidden; cursor: pointer;
+          background: linear-gradient(150deg, rgba(255,255,255,0.058) 0%, rgba(255,255,255,0.018) 100%);
           border: 1px solid rgba(255,255,255,0.07);
-          backdrop-filter: blur(16px);
-          transition: border-color 0.35s ease, box-shadow 0.35s ease;
-        }
-        .pillar-card:hover {
-          border-color: rgba(33,154,234,0.35);
-          box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 40px rgba(33,154,234,0.08);
+          backdrop-filter: blur(18px);
+          transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
         }
         .pillar-card::before {
           content: '';
           position: absolute; top: 0; left: 0; right: 0; height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(33,154,234,0.5), transparent);
-          opacity: 0;
-          transition: opacity 0.35s;
+          background: linear-gradient(90deg, transparent, rgba(33,154,234,0.55), transparent);
+          opacity: 0; transition: opacity 0.35s;
         }
+        .pillar-card:hover { border-color: rgba(33,154,234,0.3); box-shadow: 0 28px 64px rgba(0,0,0,0.45), 0 0 48px rgba(33,154,234,0.07); }
         .pillar-card:hover::before { opacity: 1; }
 
-        .pillar-number {
-          position: absolute;
-          top: 20px; right: 22px;
-          font-family: 'Playfair Display', serif;
-          font-size: 4.5rem;
-          font-weight: 900;
-          color: rgba(33,154,234,0.06);
-          line-height: 1;
-          pointer-events: none;
-          user-select: none;
-          transition: color 0.35s;
+        /* Corner accent on hover */
+        .pillar-card::after {
+          content: '';
+          position: absolute; bottom: 0; right: 0;
+          width: 80px; height: 80px;
+          background: radial-gradient(circle at bottom right, rgba(33,154,234,0.08), transparent 70%);
+          opacity: 0; transition: opacity 0.4s;
         }
-        .pillar-card:hover .pillar-number { color: rgba(33,154,234,0.1); }
+        .pillar-card:hover::after { opacity: 1; }
+
+        .pillar-number {
+          position: absolute; top: 18px; right: 20px;
+          font-family: 'Playfair Display', serif;
+          font-size: 5rem; font-weight: 900;
+          color: rgba(33,154,234,0.05); line-height: 1;
+          pointer-events: none; user-select: none;
+          transition: color 0.35s, transform 0.35s;
+        }
+        .pillar-card:hover .pillar-number { color: rgba(33,154,234,0.09); transform: scale(1.06) translateY(-4px); }
 
         .pillar-icon-wrap {
-          width: 52px; height: 52px;
-          border-radius: 14px;
-          background: linear-gradient(135deg, rgba(33,154,234,0.2), rgba(35,87,166,0.15));
-          border: 1px solid rgba(33,154,234,0.2);
+          width: 54px; height: 54px; border-radius: 16px;
+          background: linear-gradient(135deg, rgba(33,154,234,0.18), rgba(35,87,166,0.12));
+          border: 1px solid rgba(33,154,234,0.18);
           display: flex; align-items: center; justify-content: center;
-          color: #60b8f0;
+          color: #7ec8f5;
           transition: all 0.35s;
+          box-shadow: 0 4px 16px rgba(33,154,234,0.08);
         }
         .pillar-card:hover .pillar-icon-wrap {
-          background: linear-gradient(135deg, rgba(33,154,234,0.3), rgba(35,87,166,0.25));
-          border-color: rgba(33,154,234,0.4);
-          box-shadow: 0 0 20px rgba(33,154,234,0.15);
+          background: linear-gradient(135deg, rgba(33,154,234,0.28), rgba(35,87,166,0.22));
+          border-color: rgba(33,154,234,0.38);
+          box-shadow: 0 0 24px rgba(33,154,234,0.2);
+          transform: scale(1.05);
         }
 
         .pillar-label {
-          font-size: 0.65rem;
-          font-weight: 600;
-          letter-spacing: 0.2em;
-          text-transform: uppercase;
-          color: #219AEA;
-          margin-bottom: 6px;
+          font-size: 0.62rem; font-weight: 600;
+          letter-spacing: 0.22em; text-transform: uppercase;
+          color: #219AEA; margin-bottom: 6px;
         }
         .pillar-title {
           font-family: 'Playfair Display', serif;
-          font-size: 1.3rem;
-          font-weight: 700;
-          color: rgba(255,255,255,0.92);
-          line-height: 1.25;
-          margin-bottom: 4px;
+          font-size: 1.3rem; font-weight: 700;
+          color: rgba(255,255,255,0.93); line-height: 1.22; margin-bottom: 4px;
         }
         .pillar-subtitle {
-          font-size: 0.7rem;
-          color: rgba(255,255,255,0.3);
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          margin-bottom: 14px;
+          font-size: 0.67rem; color: rgba(255,255,255,0.28);
+          letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px;
         }
         .pillar-divider {
-          width: 32px; height: 1.5px;
+          width: 30px; height: 1.5px;
           background: linear-gradient(90deg, #219AEA, transparent);
-          border-radius: 2px;
-          margin-bottom: 14px;
-          transition: width 0.35s ease;
+          border-radius: 2px; margin-bottom: 14px;
+          transition: width 0.4s ease;
         }
-        .pillar-card:hover .pillar-divider { width: 56px; }
+        .pillar-card:hover .pillar-divider { width: 52px; }
+
         .pillar-body {
-          font-size: 0.84rem;
-          color: rgba(255,255,255,0.45);
-          line-height: 1.8;
+          font-size: 0.83rem; color: rgba(255,255,255,0.42); line-height: 1.82;
+          transition: color 0.3s;
         }
+        .pillar-card:hover .pillar-body { color: rgba(255,255,255,0.52); }
 
         /* ── CTA button ── */
         .cta-btn {
           position: relative;
           display: inline-flex; align-items: center; gap: 10px;
-          padding: 14px 36px;
+          padding: 14px 38px;
           border-radius: 100px;
           font-family: 'Jost', sans-serif;
-          font-size: 0.78rem;
-          font-weight: 600;
-          letter-spacing: 0.14em;
-          text-transform: uppercase;
-          color: white;
-          overflow: hidden;
+          font-size: 0.76rem; font-weight: 600;
+          letter-spacing: 0.14em; text-transform: uppercase;
+          color: white; overflow: hidden; cursor: pointer;
+          border: 1px solid rgba(33,154,234,0.35);
+          background: linear-gradient(135deg, rgba(33,154,234,0.12), rgba(35,87,166,0.08));
+          backdrop-filter: blur(12px);
           transition: all 0.35s ease;
-          cursor: pointer;
-          border: 1px solid rgba(33,154,234,0.4);
-          background: linear-gradient(135deg, rgba(33,154,234,0.15), rgba(35,87,166,0.1));
-          backdrop-filter: blur(10px);
         }
         .cta-btn::before {
-          content: '';
-          position: absolute; inset: 0;
+          content: ''; position: absolute; inset: 0;
           background: linear-gradient(135deg, #219AEA, #2357A6);
-          opacity: 0;
-          transition: opacity 0.35s;
+          opacity: 0; transition: opacity 0.35s;
         }
         .cta-btn:hover::before { opacity: 1; }
         .cta-btn:hover {
           border-color: transparent;
-          box-shadow: 0 0 40px rgba(33,154,234,0.35), 0 8px 32px rgba(0,0,0,0.3);
+          box-shadow: 0 0 48px rgba(33,154,234,0.35), 0 10px 36px rgba(0,0,0,0.35);
           transform: translateY(-2px);
         }
         .cta-btn span, .cta-btn svg { position: relative; z-index: 1; }
         .cta-btn svg { transition: transform 0.3s ease; }
         .cta-btn:hover svg { transform: translateX(4px); }
+
+        /* Separator line */
+        .section-sep {
+          width: 1px; height: 56px;
+          background: linear-gradient(to bottom, transparent, rgba(33,154,234,0.4), transparent);
+          margin: 0 auto;
+        }
       `}</style>
 
-      <section className="arkshism-root arkshism-bg relative overflow-hidden py-24 px-4 sm:px-6">
-        {/* ── Starfield ── */}
-        {[
-          { top: '8%', left: '12%', size: 1.5, dur: '4s', delay: '0s', minOp: 0.2, maxOp: 0.8 },
-          { top: '15%', left: '78%', size: 1, dur: '3s', delay: '1s', minOp: 0.1, maxOp: 0.6 },
-          { top: '25%', left: '55%', size: 2, dur: '5s', delay: '0.5s', minOp: 0.15, maxOp: 0.7 },
-          { top: '40%', left: '6%', size: 1.5, dur: '3.5s', delay: '2s', minOp: 0.1, maxOp: 0.5 },
-          { top: '60%', left: '88%', size: 1, dur: '4.5s', delay: '1.5s', minOp: 0.2, maxOp: 0.65 },
-          { top: '72%', left: '22%', size: 2.5, dur: '6s', delay: '0.8s', minOp: 0.1, maxOp: 0.55 },
-          { top: '85%', left: '65%', size: 1, dur: '3s', delay: '3s', minOp: 0.15, maxOp: 0.7 },
-          { top: '5%', left: '40%', size: 1.5, dur: '4s', delay: '0.3s', minOp: 0.1, maxOp: 0.5 },
-          { top: '50%', left: '48%', size: 1, dur: '5s', delay: '2.5s', minOp: 0.1, maxOp: 0.4 },
-          { top: '90%', left: '10%', size: 2, dur: '4s', delay: '1.2s', minOp: 0.15, maxOp: 0.6 },
-        ].map((s, i) => (
+      <section className="arkshism-root arkshism-bg relative overflow-hidden py-28 px-4 sm:px-6">
+        {/* ── Stars ── */}
+        {STARS.map((s, i) => (
           <div
             key={i}
             className="star"
@@ -367,35 +361,45 @@ export default function Arkshism() {
           />
         ))}
 
-        {/* Nebula glows */}
+        {/* ── Nebula glows ── */}
         <div
           className="nebula"
           style={{
-            top: '-10%',
-            right: '-8%',
-            width: 500,
-            height: 500,
-            background: 'rgba(33,154,234,0.07)',
+            top: '-12%',
+            right: '-6%',
+            width: 560,
+            height: 560,
+            background: 'rgba(33,154,234,0.065)',
           }}
         />
         <div
           className="nebula"
           style={{
-            bottom: '-15%',
-            left: '-10%',
-            width: 600,
-            height: 600,
-            background: 'rgba(35,87,166,0.08)',
+            bottom: '-18%',
+            left: '-8%',
+            width: 640,
+            height: 640,
+            background: 'rgba(35,87,166,0.075)',
           }}
         />
         <div
           className="nebula"
           style={{
-            top: '40%',
-            left: '40%',
-            width: 400,
+            top: '35%',
+            left: '38%',
+            width: 420,
+            height: 320,
+            background: 'rgba(96,184,240,0.035)',
+          }}
+        />
+        <div
+          className="nebula"
+          style={{
+            top: '60%',
+            right: '15%',
+            width: 300,
             height: 300,
-            background: 'rgba(96,184,240,0.04)',
+            background: 'rgba(33,154,234,0.04)',
           }}
         />
 
@@ -406,45 +410,55 @@ export default function Arkshism() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
             variants={scaleIn}
-            className="hero-card p-10 sm:p-14 text-center mb-16"
+            className="hero-card px-8 py-14 sm:px-14 sm:py-16 text-center mb-6"
           >
             {/* Logo */}
-            <div className="flex justify-center mb-7">
+            <div className="flex justify-center mb-8">
               <div className="logo-ring">
                 <div className="logo-glow" />
                 <img
                   src="https://www.arkshgroup.com/arksh-round.png"
                   alt="Arksh Logo"
                   className="h-14 w-14 object-contain relative z-10"
-                  style={{ filter: 'drop-shadow(0 0 12px rgba(33,154,234,0.4))' }}
+                  style={{ filter: 'drop-shadow(0 0 14px rgba(33,154,234,0.5))' }}
                 />
               </div>
             </div>
 
-            {/* Label */}
-            <p
-              style={{
-                fontSize: '0.68rem',
-                fontWeight: 600,
-                letterSpacing: '0.24em',
-                textTransform: 'uppercase',
-                color: '#219AEA',
-                marginBottom: 14,
-              }}
-            >
-              The Guiding Philosophy
-            </p>
+            {/* Floating badge */}
+            <div className="flex justify-center mb-6">
+              <div className="hero-badge">
+                <div className="hero-badge-dot">
+                  <span />
+                </div>
+                <span
+                  style={{
+                    fontSize: '0.68rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    color: '#219AEA',
+                  }}
+                >
+                  The Guiding Philosophy
+                </span>
+              </div>
+            </div>
 
             {/* Title */}
             <h2
-              className="display-font font-black text-white mb-5"
-              style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)', lineHeight: 1.05 }}
+              className="display-font font-black text-white mb-2"
+              style={{
+                fontSize: 'clamp(2.6rem, 5.5vw, 4.2rem)',
+                lineHeight: 1.04,
+                letterSpacing: '-0.01em',
+              }}
             >
-              Ark<span className="title-word-stars">sh</span>ism
+              Ark<span className="title-gradient">sh</span>ism
             </h2>
 
             {/* Ornament */}
-            <div className="ornament-divider mb-7">
+            <div className="ornament-divider mt-5 mb-7">
               <div className="ornament-line" />
               <div className="ornament-diamond" />
               <div className="ornament-line right" />
@@ -452,19 +466,22 @@ export default function Arkshism() {
 
             {/* Description */}
             <p
-              className="text-white/50 max-w-xl mx-auto leading-relaxed"
-              style={{ fontSize: '0.94rem', lineHeight: 1.9 }}
+              className="text-white/45 max-w-lg mx-auto"
+              style={{ fontSize: '0.93rem', lineHeight: 1.92 }}
             >
               The guiding philosophy behind this identity and visual representation of the logo is
-              known as <em className="text-white/70 not-italic font-medium">Arkshism</em> — a
+              known as <em className="text-white/75 not-italic font-semibold">Arkshism</em> — a
               concept rooted in celestial aspiration, stellar excellence, and interconnected
               purpose.
             </p>
           </motion.div>
 
+          {/* Vertical separator */}
+          <div className="section-sep mb-6" />
+
           {/* ── 3 Pillar Cards ── */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-5"
             variants={containerVariants}
             initial="hidden"
             whileInView="visible"
@@ -484,13 +501,9 @@ export default function Arkshism() {
                 {/* Icon */}
                 <div className="pillar-icon-wrap mb-6">{pillar.icon}</div>
 
-                {/* Label */}
+                {/* Meta */}
                 <p className="pillar-label">{pillar.label}</p>
-
-                {/* Title */}
                 <h3 className="pillar-title">{pillar.title}</h3>
-
-                {/* Subtitle */}
                 <p className="pillar-subtitle">{pillar.subtitle}</p>
 
                 {/* Divider */}
@@ -508,7 +521,7 @@ export default function Arkshism() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="flex justify-center mt-16"
+            className="flex flex-col items-center mt-14 gap-5"
           >
             <Link href="/arkshism">
               <button className="cta-btn">
@@ -527,6 +540,18 @@ export default function Arkshism() {
                 </svg>
               </button>
             </Link>
+
+            {/* Sub-text */}
+            <p
+              style={{
+                fontSize: '0.7rem',
+                color: 'rgba(255,255,255,0.25)',
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+              }}
+            >
+              Celestial aspiration · Stellar excellence
+            </p>
           </motion.div>
         </div>
       </section>

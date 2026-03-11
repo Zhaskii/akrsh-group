@@ -40,7 +40,7 @@ export default function FeaturedProducts() {
     if (isPaused || !mounted || products.length === 0) return
     const interval = setInterval(() => {
       handleNext()
-    }, 3000)
+    }, 1000)
     return () => clearInterval(interval)
   }, [currentIndex, isPaused, mounted, products.length])
 

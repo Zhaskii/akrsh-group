@@ -117,15 +117,9 @@ export default function Hero() {
         .hero-root { font-family: 'Outfit', sans-serif; }
         .display-font { font-family: 'Cormorant Garamond', serif; }
 
-        /* Slideshow */
-        .slide-counter {
-          font-family: 'Outfit', sans-serif;
-          font-size: 0.7rem;
-          letter-spacing: 0.18em;
-          color: rgba(255,255,255,0.7);
-        }
+        /* Progress bar */
         .progress-bar-track {
-          background: rgba(255,255,255,0.2);
+          background: rgba(255,255,255,0.18);
           border-radius: 100px;
           height: 2px;
           overflow: hidden;
@@ -133,128 +127,145 @@ export default function Hero() {
         }
         .progress-bar-fill {
           height: 100%;
-          background: white;
+          background: linear-gradient(90deg, rgba(255,255,255,0.6), white);
           border-radius: 100px;
           transition: width 0.05s linear;
         }
 
-        /* Nav arrows */
+        /* Nav buttons */
         .nav-btn {
-          width: 44px; height: 44px;
-          border-radius: 50%;
-          border: 1px solid rgba(255,255,255,0.3);
-          background: rgba(255,255,255,0.1);
-          backdrop-filter: blur(10px);
+          width: 42px; height: 42px;
+          border-radius: 12px;
+          border: 1px solid rgba(255,255,255,0.25);
+          background: rgba(255,255,255,0.08);
+          backdrop-filter: blur(12px);
           display: flex; align-items: center; justify-content: center;
           color: white;
           cursor: pointer;
           transition: all 0.25s ease;
         }
         .nav-btn:hover {
-          background: rgba(33,154,234,0.5);
-          border-color: rgba(33,154,234,0.8);
-          transform: scale(1.08);
+          background: rgba(33,154,234,0.45);
+          border-color: rgba(33,154,234,0.7);
+          transform: scale(1.06);
+          box-shadow: 0 4px 16px rgba(33,154,234,0.3);
         }
 
         /* Dot indicators */
         .dot-indicator {
           width: 6px; height: 6px;
           border-radius: 100px;
-          background: rgba(255,255,255,0.35);
+          background: rgba(255,255,255,0.3);
           cursor: pointer;
-          transition: all 0.3s ease;
+          transition: all 0.35s ease;
         }
         .dot-indicator.active {
-          width: 24px;
+          width: 28px;
           background: white;
         }
-        .dot-indicator:hover {
-          background: rgba(255,255,255,0.7);
-        }
+        .dot-indicator:hover { background: rgba(255,255,255,0.65); }
 
-        /* Bottom gradient */
-        .slide-gradient {
+        /* Cinematic overlays */
+        .slide-top-vignette {
+          background: linear-gradient(to bottom, rgba(5,12,30,0.4) 0%, transparent 100%);
+        }
+        .slide-bottom-gradient {
           background: linear-gradient(
             to top,
-            rgba(5, 15, 35, 0.85) 0%,
-            rgba(5, 15, 35, 0.3) 45%,
+            rgba(5,12,30,0.9) 0%,
+            rgba(5,12,30,0.4) 50%,
             transparent 100%
           );
         }
+        .slide-left-vignette {
+          background: linear-gradient(to right, rgba(5,12,30,0.35), transparent);
+        }
 
-        /* Cinematic letterbox bars */
-        .letterbox-top { background: linear-gradient(to bottom, rgba(0,0,0,0.35), transparent); }
-        .letterbox-bottom { background: linear-gradient(to top, rgba(0,0,0,0.45), transparent); }
-
-        /* Content section */
+        /* Content bg */
         .content-section {
-          background: linear-gradient(160deg, #ffffff 0%, #f4f8fe 55%, #eef4fc 100%);
+          background: #f0f6ff;
         }
 
         /* Accent line */
         .accent-line {
-          width: 56px; height: 2px;
+          width: 52px; height: 3px;
           background: linear-gradient(90deg, #219AEA, #2357A6);
-          border-radius: 2px;
-        }
-
-        /* Headline gradient */
-        .headline-gradient {
-          background: linear-gradient(135deg, #0f1e3c 0%, #219AEA 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          border-radius: 100px;
         }
 
         /* Image card */
         .image-card {
           position: relative;
-          border-radius: 20px;
+          border-radius: 24px;
           overflow: hidden;
-          box-shadow: 0 32px 64px rgba(33,87,166,0.18), 0 8px 24px rgba(0,0,0,0.1);
+          box-shadow:
+            0 32px 64px rgba(35,87,166,0.18),
+            0 8px 24px rgba(0,0,0,0.08),
+            inset 0 0 0 1px rgba(255,255,255,0.6);
         }
         .image-card::before {
           content: '';
           position: absolute;
-          inset: -14px -14px 14px 14px;
-          border: 1.5px solid rgba(33,154,234,0.2);
-          border-radius: 24px;
+          inset: -12px -12px 12px 12px;
+          border: 1.5px solid rgba(33,154,234,0.18);
+          border-radius: 28px;
           z-index: -1;
           pointer-events: none;
         }
-        .image-card-overlay {
-          position: absolute; inset: 0;
-          background: linear-gradient(135deg, rgba(33,154,234,0.08), rgba(35,87,166,0.12));
-        }
-        .image-card-badge {
+
+        /* Corner accent brackets */
+        .corner-tl, .corner-br {
           position: absolute;
-          bottom: 20px; left: 20px;
-          background: rgba(255,255,255,0.92);
-          backdrop-filter: blur(12px);
+          width: 32px; height: 32px;
+          z-index: 10;
+          pointer-events: none;
+        }
+        .corner-tl {
+          top: 14px; right: 14px;
+          border-top: 2px solid rgba(33,154,234,0.55);
+          border-right: 2px solid rgba(33,154,234,0.55);
+          border-radius: 0 10px 0 0;
+        }
+        .corner-br {
+          bottom: 14px; left: 14px;
+          border-bottom: 2px solid rgba(33,154,234,0.55);
+          border-left: 2px solid rgba(33,154,234,0.55);
+          border-radius: 0 0 0 10px;
+        }
+
+        /* Floating badge */
+        .image-badge {
+          position: absolute;
+          bottom: 18px; left: 18px;
+          background: rgba(255,255,255,0.93);
+          backdrop-filter: blur(14px);
           border-radius: 100px;
-          padding: 8px 18px;
+          padding: 8px 16px 8px 10px;
           display: flex; align-items: center; gap: 8px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+          box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+          z-index: 10;
         }
         .badge-dot {
           width: 8px; height: 8px; border-radius: 50%;
-          background: #219AEA;
+          background: linear-gradient(135deg, #219AEA, #2357A6);
           animation: pulse-dot 2s infinite;
+          flex-shrink: 0;
         }
         @keyframes pulse-dot {
           0%, 100% { box-shadow: 0 0 0 0 rgba(33,154,234,0.4); }
-          50% { box-shadow: 0 0 0 6px rgba(33,154,234,0); }
+          50%       { box-shadow: 0 0 0 6px rgba(33,154,234,0); }
         }
 
         /* Year badge */
         .year-badge {
           display: inline-flex; align-items: center; gap: 8px;
-          background: rgba(33,154,234,0.08);
-          border: 1px solid rgba(33,154,234,0.2);
+          background: rgba(33,154,234,0.07);
+          border: 1px solid rgba(33,154,234,0.18);
           border-radius: 100px;
           padding: 5px 14px 5px 5px;
           margin-bottom: 18px;
         }
-        .year-badge-pill {
+        .year-pill {
           background: linear-gradient(135deg, #219AEA, #2357A6);
           color: white;
           border-radius: 100px;
@@ -263,78 +274,83 @@ export default function Hero() {
           font-weight: 600;
           letter-spacing: 0.08em;
         }
-        .year-badge-text {
-          font-size: 0.72rem;
-          color: #2357A6;
-          font-weight: 500;
-          letter-spacing: 0.06em;
-        }
 
-        /* CTA Button */
-        .cta-btn {
+        /* CTA */
+        .cta-primary {
           position: relative;
           background: linear-gradient(135deg, #219AEA 0%, #2357A6 100%);
           color: white;
           padding: 13px 30px;
-          border-radius: 8px;
+          border-radius: 12px;
           font-weight: 500;
-          font-size: 0.8rem;
+          font-size: 0.78rem;
           letter-spacing: 0.1em;
           text-transform: uppercase;
           overflow: hidden;
           transition: all 0.3s ease;
-          cursor: pointer;
           display: inline-block;
-          border: none;
+          border: none; cursor: pointer;
         }
-        .cta-btn::after {
+        .cta-primary::after {
           content: '';
           position: absolute; inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+          background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent);
           opacity: 0;
           transition: opacity 0.3s;
         }
-        .cta-btn:hover { box-shadow: 0 10px 32px rgba(33,154,234,0.45); transform: translateY(-2px); }
-        .cta-btn:hover::after { opacity: 1; }
+        .cta-primary:hover {
+          box-shadow: 0 12px 36px rgba(33,154,234,0.42);
+          transform: translateY(-2px);
+        }
+        .cta-primary:hover::after { opacity: 1; }
 
-        /* Secondary link */
         .secondary-link {
           display: inline-flex; align-items: center; gap: 6px;
           color: #2357A6;
-          font-size: 0.82rem;
+          font-size: 0.8rem;
           font-weight: 500;
           letter-spacing: 0.04em;
           transition: gap 0.25s ease;
-          text-decoration: none;
         }
         .secondary-link:hover { gap: 10px; }
         .secondary-link svg { transition: transform 0.25s; }
-        .secondary-link:hover svg { transform: translateX(2px); }
+        .secondary-link:hover svg { transform: translateX(3px); }
 
-        /* Slide-in animations */
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(28px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slide-up { animation: slideUp 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
-
-        /* Stats row */
+        /* Stat dividers */
         .stat-item {
-          padding: 0 20px;
+          padding: 0 22px;
           border-right: 1px solid rgba(33,154,234,0.15);
         }
         .stat-item:first-child { padding-left: 0; }
         .stat-item:last-child { border-right: none; }
+
+        /* Slide counter */
+        .slide-counter {
+          font-size: 0.68rem;
+          letter-spacing: 0.2em;
+          color: rgba(255,255,255,0.65);
+          font-family: 'Outfit', sans-serif;
+        }
+
+        /* Brand watermark */
+        .watermark {
+          font-family: 'Cormorant Garamond', serif;
+          color: rgba(255,255,255,0.12);
+          letter-spacing: 0.16em;
+          font-weight: 700;
+          user-select: none;
+          pointer-events: none;
+        }
       `}</style>
 
       <div className="hero-root">
         {/* ── Cinematic Slideshow ── */}
-        <div className="group relative w-full h-[38vh] sm:h-[62vh] md:h-[74vh] lg:h-[84vh] xl:h-[88vh] overflow-hidden bg-gray-900">
+        <div className="relative w-full h-[38vh] sm:h-[62vh] md:h-[74vh] lg:h-[84vh] xl:h-[90vh] overflow-hidden bg-[#050c1e]">
           {/* Slides */}
           {HERO_IMAGES.map((imageAsset, index) => (
             <div
               key={index}
-              className={`absolute inset-0 transition-opacity duration-1200 ease-in-out ${
+              className={`absolute inset-0 transition-opacity ease-in-out ${
                 index === currentImageIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
               }`}
               style={{ transitionDuration: '1200ms' }}
@@ -344,23 +360,43 @@ export default function Hero() {
                 alt={`Arksh Group ${index + 1}`}
                 fill
                 priority={index === 0}
-                className="object-cover object-center scale-[1.02] transition-transform duration-6000 ease-out"
-                style={{ transform: index === currentImageIndex ? 'scale(1)' : 'scale(1.04)' }}
+                className="object-cover object-center"
+                style={{
+                  transform: index === currentImageIndex ? 'scale(1)' : 'scale(1.04)',
+                  transition: 'transform 6s ease-out',
+                }}
                 placeholder="blur"
               />
             </div>
           ))}
 
-          {/* Cinematic overlays */}
-          <div className="letterbox-top absolute top-0 left-0 right-0 h-24 z-20 pointer-events-none" />
-          <div className="letterbox-bottom absolute bottom-0 left-0 right-0 h-2/5 z-20 pointer-events-none" />
+          {/* Overlays */}
+          <div className="slide-top-vignette absolute top-0 left-0 right-0 h-28 z-20 pointer-events-none" />
+          <div className="slide-bottom-gradient absolute bottom-0 left-0 right-0 h-[55%] z-20 pointer-events-none" />
+          <div className="slide-left-vignette absolute top-0 left-0 bottom-0 w-1/3 z-20 pointer-events-none" />
 
-          {/* Bottom HUD — slide info + controls */}
-          <div className="absolute bottom-0 left-0 right-0 z-30 px-5 sm:px-8 md:px-12 pb-5 sm:pb-8">
+          {/* Brand watermark top-right */}
+          <div className="absolute top-5 right-6 sm:top-7 sm:right-10 z-30 hidden sm:block">
+            <span className="watermark" style={{ fontSize: 'clamp(1rem, 2vw, 1.6rem)' }}>
+              ARKSH GROUP
+            </span>
+          </div>
+
+          {/* Vertical slide number — left side */}
+          <div className="absolute left-5 sm:left-8 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col items-center gap-3">
+            <div className="w-px h-12 bg-white/20" />
+            <span className="slide-counter" style={{ writingMode: 'vertical-rl' }}>
+              {String(currentImageIndex + 1).padStart(2, '0')}
+            </span>
+            <div className="w-px h-12 bg-white/20" />
+          </div>
+
+          {/* Bottom HUD */}
+          <div className="absolute bottom-0 left-0 right-0 z-30 px-5 sm:px-10 md:px-14 pb-5 sm:pb-7">
             <div className="max-w-7xl mx-auto flex items-end justify-between gap-6">
-              {/* Left: counter + progress */}
-              <div className="flex items-center gap-3 flex-1">
-                <span className="slide-counter">
+              {/* Progress bar + counter */}
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <span className="slide-counter shrink-0">
                   {String(currentImageIndex + 1).padStart(2, '0')} /{' '}
                   {String(HERO_IMAGES.length).padStart(2, '0')}
                 </span>
@@ -369,7 +405,7 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Center: dot indicators */}
+              {/* Dot indicators */}
               <div className="flex items-center gap-1.5">
                 {HERO_IMAGES.map((_, i) => (
                   <button
@@ -381,8 +417,8 @@ export default function Hero() {
                 ))}
               </div>
 
-              {/* Right: nav arrows */}
-              <div className="flex items-center gap-2">
+              {/* Nav arrows */}
+              <div className="flex items-center gap-2 shrink-0">
                 <button onClick={prevSlide} className="nav-btn" aria-label="Previous">
                   <ChevronLeftIcon className="w-4 h-4" />
                 </button>
@@ -392,23 +428,13 @@ export default function Hero() {
               </div>
             </div>
           </div>
-
-          {/* Brand watermark */}
-          <div className="absolute top-5 right-5 sm:top-8 sm:right-10 z-30 hidden sm:block">
-            <span
-              className="display-font text-white/20 font-bold select-none pointer-events-none"
-              style={{ fontSize: 'clamp(1.2rem, 2.5vw, 2rem)', letterSpacing: '0.12em' }}
-            >
-              ARKSH GROUP
-            </span>
-          </div>
         </div>
 
         {/* ── Content Section ── */}
         <section className="content-section w-full py-14 sm:py-18 md:py-22 lg:py-28 overflow-hidden">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
-              {/* Left Content */}
+              {/* ── Left ── */}
               <div
                 ref={leftRef}
                 className="max-w-xl"
@@ -419,20 +445,25 @@ export default function Hero() {
                     'opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)',
                 }}
               >
-                {/* Year badge */}
+                {/* Badge */}
                 <div className="year-badge">
-                  <span className="year-badge-pill">Est. 1978</span>
-                  <span className="year-badge-text">45+ Years of Excellence</span>
+                  <span className="year-pill">Est. 1978</span>
+                  <span
+                    style={{
+                      fontSize: '0.72rem',
+                      color: '#2357A6',
+                      fontWeight: 500,
+                      letterSpacing: '0.06em',
+                    }}
+                  >
+                    45+ Years of Excellence
+                  </span>
                 </div>
 
                 {/* Headline */}
                 <h1
-                  className="display-font font-bold mb-3 leading-tight"
-                  style={{
-                    fontSize: 'clamp(1.9rem, 4vw, 3.2rem)',
-                    lineHeight: 1.12,
-                    color: '#0f1e3c',
-                  }}
+                  className="display-font font-bold mb-3 leading-[1.1] text-[#0f1e3c]"
+                  style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)' }}
                 >
                   Unlocking{' '}
                   <em
@@ -449,11 +480,11 @@ export default function Hero() {
                   Possibilities
                 </h1>
 
-                <div className="accent-line mb-5" />
+                <div className="accent-line mb-6" />
 
                 <p
-                  className="text-gray-600 leading-relaxed mb-3 text-justify"
-                  style={{ fontSize: 'clamp(0.875rem, 1.5vw, 0.975rem)', lineHeight: 1.85 }}
+                  className="text-gray-500 leading-[1.88] mb-3 text-justify"
+                  style={{ fontSize: 'clamp(0.875rem, 1.5vw, 0.95rem)' }}
                 >
                   The business journey of Arksh Group, formerly known as R. K Associates, started
                   back in 1978 A.D when{' '}
@@ -464,7 +495,7 @@ export default function Hero() {
 
                 {/* Stats */}
                 <div
-                  className="flex items-center mb-8 mt-6"
+                  className="flex items-center my-7"
                   style={{
                     opacity: leftInView ? 1 : 0,
                     transform: leftInView ? 'translateY(0)' : 'translateY(16px)',
@@ -478,16 +509,22 @@ export default function Hero() {
                   ].map((s) => (
                     <div key={s.label} className="stat-item">
                       <p
-                        className="display-font font-bold text-[#219AEA]"
-                        style={{ fontSize: '1.6rem', lineHeight: 1 }}
+                        className="display-font font-bold"
+                        style={{
+                          fontSize: '1.65rem',
+                          lineHeight: 1,
+                          background: 'linear-gradient(135deg, #219AEA, #2357A6)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                        }}
                       >
                         {s.value}
                       </p>
                       <p
-                        className="text-gray-500 mt-0.5"
+                        className="text-gray-400 mt-0.5 font-medium"
                         style={{
-                          fontSize: '0.7rem',
-                          letterSpacing: '0.08em',
+                          fontSize: '0.68rem',
+                          letterSpacing: '0.1em',
                           textTransform: 'uppercase',
                         }}
                       >
@@ -497,7 +534,7 @@ export default function Hero() {
                   ))}
                 </div>
 
-                {/* CTA */}
+                {/* CTAs */}
                 <div
                   className="flex items-center gap-6 flex-wrap"
                   style={{
@@ -507,7 +544,7 @@ export default function Hero() {
                   }}
                 >
                   <Link href="/about">
-                    <button className="cta-btn">Discover Our Story</button>
+                    <button className="cta-primary">Discover Our Story</button>
                   </Link>
                   <Link href="/companies" className="secondary-link">
                     Our Companies
@@ -527,7 +564,7 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Right Image */}
+              {/* ── Right Image ── */}
               <div
                 ref={rightRef}
                 className="image-card"
@@ -542,16 +579,28 @@ export default function Hero() {
                 }}
               >
                 <div
-                  className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-105"
+                  className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-[1.04]"
                   style={{
                     backgroundImage:
                       "url('https://arkshgroup.com/uploads/about/Lumbini-celebrating-45-years-copy.jpg')",
                   }}
                 />
-                <div className="image-card-overlay" />
+
+                {/* Subtle color overlay */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, rgba(33,154,234,0.06), rgba(35,87,166,0.1))',
+                  }}
+                />
+
+                {/* Corner brackets */}
+                <div className="corner-tl" />
+                <div className="corner-br" />
 
                 {/* Floating badge */}
-                <div className="image-card-badge">
+                <div className="image-badge">
                   <div className="badge-dot" />
                   <span
                     style={{
@@ -565,29 +614,11 @@ export default function Hero() {
                   </span>
                 </div>
 
-                {/* Corner accent */}
+                {/* Gradient bottom fade */}
                 <div
+                  className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
                   style={{
-                    position: 'absolute',
-                    top: 16,
-                    right: 16,
-                    width: 36,
-                    height: 36,
-                    borderTop: '2px solid rgba(33,154,234,0.5)',
-                    borderRight: '2px solid rgba(33,154,234,0.5)',
-                    borderRadius: '0 8px 0 0',
-                  }}
-                />
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: 16,
-                    left: 16,
-                    width: 36,
-                    height: 36,
-                    borderBottom: '2px solid rgba(33,154,234,0.5)',
-                    borderLeft: '2px solid rgba(33,154,234,0.5)',
-                    borderRadius: '0 0 0 8px',
+                    background: 'linear-gradient(to top, rgba(10,20,50,0.25), transparent)',
                   }}
                 />
               </div>

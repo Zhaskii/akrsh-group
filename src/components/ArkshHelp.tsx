@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { HomeIcon, CalendarIcon } from '@heroicons/react/24/solid'
+import { HomeIcon, CalendarIcon, HeartIcon, ArrowRightIcon } from '@heroicons/react/24/solid'
 import PageBanner from '@/components/PageBanner'
 import Link from 'next/link'
 import { BlogPost } from './BlogDetails'
@@ -10,18 +10,13 @@ import { BlogPost } from './BlogDetails'
 const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
 
 export default function ArkshHelps() {
-  const [activeVideo, setActiveVideo] = useState<{
-    url: string
-    type: string
-  } | null>(null)
-
+  const [activeVideo, setActiveVideo] = useState<{ url: string; type: string } | null>(null)
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [videos, setVideos] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
 
   function getExcerpt(excerpt: any) {
     if (!excerpt?.root?.children) return ''
-
     return excerpt.root.children
       .map((node: any) => node.children?.map((child: any) => child.text || '').join(''))
       .join('')
@@ -31,7 +26,6 @@ export default function ArkshHelps() {
   const getThumbnail = (url: string) => {
     const match = url.match(/(?:youtube\.com\/(?:embed\/|watch\?v=)|youtu\.be\/)([^?&]+)/)
     const videoId = match ? match[1] : null
-
     return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : '/placeholder.jpg'
   }
 
@@ -41,10 +35,7 @@ export default function ArkshHelps() {
         const res = await fetch(
           `${PAYLOAD_BASE_URL}/api/blogs?where[status][equals]=open&depth=1&limit=100`,
         )
-
         const data = await res.json()
-        console.log(data.docs)
-
         setPosts(Array.isArray(data.docs) ? data.docs : [])
       } catch (error) {
         console.error('Blog fetch error:', error)
@@ -52,7 +43,6 @@ export default function ArkshHelps() {
         setLoading(false)
       }
     }
-
     fetchBlogs()
   }, [])
 
@@ -62,22 +52,17 @@ export default function ArkshHelps() {
         const res = await fetch(
           `${PAYLOAD_BASE_URL}/api/social-videos?where[status][equals]=active&sort=order`,
         )
-
         const data = await res.json()
-
-        if (Array.isArray(data.docs)) {
-          setVideos(data.docs)
-        }
+        if (Array.isArray(data.docs)) setVideos(data.docs)
       } catch (error) {
         console.error('Video fetch error:', error)
       }
     }
-
     fetchVideos()
   }, [])
 
   return (
-    <main className="bg-white min-h-screen font-sans pb-20">
+    <main className="bg-[#f0f6ff] min-h-screen font-sans pb-20">
       <PageBanner
         title="Arksh Helps"
         breadcrumb={[
@@ -86,69 +71,113 @@ export default function ArkshHelps() {
         ]}
       />
 
-      {/* Get More Insights Section */}
-      <section className="py-16 px-4 max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-[#2257A6] mt-4 relative inline-block">
+      {/* ── Get More Insights ── */}
+      <section className="py-20 px-4 max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-14">
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
+            Knowledge Hub
+          </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a3a6e] mb-3">
             Get More Insights
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-[#49B2E7]"></span>
           </h2>
+          <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post) => (
-            <Link key={post.id} href={`/blog/${post.slug}`}>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 flex flex-col h-full hover:shadow-2xl transition-all duration-300 group">
-                <div className="relative h-64 w-full overflow-hidden">
-                  <Image
-                    src={`${PAYLOAD_BASE_URL}${post.image?.url}`}
-                    alt={post.title}
-                    fill
-                    className="object-fill transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
-                <div className="p-6 flex flex-col grow">
-                  <div className="flex items-center text-[#49B2E7] text-sm mb-3">
-                    <CalendarIcon className="w-4 h-4 mr-2" />
-                    {new Date(post.date).toLocaleDateString()}
-                  </div>
-                  <h3 className="text-lg font-bold text-[#1E8AD2] mb-3 line-clamp-2 leading-snug">
-                    {post.title}
-                  </h3>
-                  <p className="text-gray-600 text-[15px] mb-6 line-clamp-3 leading-relaxed">
-                    {getExcerpt(post.excerpt)}
-                  </p>
-                  <button className="mt-auto w-fit px-6 py-2 bg-[#49B2E7] text-white rounded-full text-sm font-semibold hover:bg-[#2257A6] transition-colors shadow-md">
-                    Read More
-                  </button>
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl overflow-hidden border border-blue-50 shadow-[0_4px_20px_rgba(52,152,219,0.07)] animate-pulse"
+              >
+                <div className="h-56 bg-blue-50" />
+                <div className="p-6 space-y-3">
+                  <div className="h-3 bg-blue-50 rounded w-1/3" />
+                  <div className="h-5 bg-blue-50 rounded w-4/5" />
+                  <div className="h-3 bg-blue-50 rounded w-full" />
+                  <div className="h-3 bg-blue-50 rounded w-2/3" />
                 </div>
               </div>
-            </Link>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
+            {posts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`}>
+                <div className="group bg-white rounded-2xl overflow-hidden border border-blue-50 shadow-[0_4px_20px_rgba(52,152,219,0.07)] hover:shadow-[0_16px_48px_rgba(52,152,219,0.16)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full">
+                  {/* Image */}
+                  <div className="relative h-56 w-full overflow-hidden">
+                    <Image
+                      src={`${PAYLOAD_BASE_URL}${post.image?.url}`}
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    {/* Top accent bar */}
+                    <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] translate-y-0.75 group-hover:translate-y-0 transition-transform duration-300" />
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6 flex flex-col grow">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="bg-blue-50 p-1 rounded-md">
+                        <CalendarIcon className="w-3.5 h-3.5 text-[#3498db]" />
+                      </div>
+                      <span className="text-[#3498db] text-xs font-semibold">
+                        {new Date(post.date).toLocaleDateString('en-US', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                        })}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-[#1a3a6e] mb-3 line-clamp-2 leading-snug group-hover:text-[#3498db] transition-colors duration-200">
+                      {post.title}
+                    </h3>
+
+                    <p className="text-gray-400 text-[13px] mb-6 line-clamp-3 leading-relaxed grow">
+                      {getExcerpt(post.excerpt)}
+                    </p>
+
+                    <div className="flex items-center gap-1.5 text-[#3498db] text-xs font-bold uppercase tracking-wider group-hover:gap-3 transition-all duration-200 mt-auto">
+                      Read More
+                      <ArrowRightIcon className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* Delivering Happiness Section */}
-      <section className="py-16 bg-white overflow-hidden">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-[#2257A6] relative inline-block">
+      {/* ── Delivering Happiness ── */}
+      <section className="py-20 bg-[#f0f6ff] overflow-hidden">
+        {/* Header */}
+        <div className="text-center mb-14 px-4">
+          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
+            Our Community
+          </p>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a3a6e] mb-3">
             Delivering Happiness
-            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-12 h-1 bg-[#49B2E7]"></span>
           </h2>
+          <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
         </div>
+
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scrollbar-hide">
+          <div className="flex overflow-x-auto gap-5 pb-4 snap-x snap-mandatory scrollbar-hide">
             {videos.map((video) => (
               <div
                 key={video.id}
-                className="relative min-w-[85%] md:min-w-[32%] rounded-2xl overflow-hidden aspect-square shadow-xl group border border-gray-100 snap-start"
+                className="relative min-w-[85%] md:min-w-[32%] rounded-2xl overflow-hidden aspect-square border border-blue-50 shadow-[0_4px_20px_rgba(52,152,219,0.10)] snap-start group"
               >
                 {video.platform === 'instagram' ? (
                   <div className="w-full h-full overflow-y-auto bg-white">
-                    <iframe
-                      src={`${video.url}/embed`}
-                      className="w-full h-[150%] border-none"
-                    ></iframe>
+                    <iframe src={`${video.url}/embed`} className="w-full h-[150%] border-none" />
                   </div>
                 ) : (
                   <div
@@ -159,12 +188,15 @@ export default function ArkshHelps() {
                       src={getThumbnail(video.url)}
                       alt="Happiness Video"
                       fill
-                      className="object-fill group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
                       unoptimized
                     />
-                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                      <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
-                        <div className="w-0 h-0 border-t-10 border-t-transparent border-l-18 border-l-white border-b-10 border-b-transparent ml-1"></div>
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/20 to-transparent" />
+                    {/* Play button */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300">
+                        <div className="w-0 h-0 border-t-10 border-t-transparent border-l-18 border-l-white border-b-10 border-b-transparent ml-1" />
                       </div>
                     </div>
                   </div>
@@ -175,18 +207,18 @@ export default function ArkshHelps() {
         </div>
       </section>
 
-      {/* Video Modal */}
+      {/* ── Video Modal ── */}
       {activeVideo && activeVideo.type === 'youtube' && (
         <div
-          className="fixed inset-0 z-100 bg-black/90 flex items-center justify-center p-4"
+          className="fixed inset-0 z-100 bg-black/92 flex items-center justify-center p-4 backdrop-blur-sm"
           onClick={() => setActiveVideo(null)}
         >
           <div
-            className="relative w-full max-w-4xl aspect-video bg-black rounded-xl overflow-hidden"
+            className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-4 right-4 z-110 text-white bg-black/50 w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+              className="absolute top-3 right-3 z-110 text-white bg-white/10 backdrop-blur-sm border border-white/20 w-9 h-9 rounded-xl flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-200 text-sm font-bold"
               onClick={() => setActiveVideo(null)}
             >
               ✕
@@ -196,36 +228,82 @@ export default function ArkshHelps() {
               className="w-full h-full"
               allow="autoplay; encrypted-media"
               allowFullScreen
-            ></iframe>
+            />
           </div>
         </div>
       )}
 
-      {/* Giving Back Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold text-[#2257A6] mb-12 flex flex-col items-center gap-2">
-            <span>🤝 Giving Back to the Community</span>
-            <div className="w-16 h-1 bg-[#49B2E7]"></div>
-          </h2>
-          <div className="space-y-6 text-gray-600 leading-relaxed text-lg">
-            <p>
-              Our mission goes beyond business, it’s about building a better tomorrow. A portion of
-              the profits generated through our operations at NPWC is proudly donated to charitable
-              foundations and social initiatives that uplift communities across Nepal.
+      {/* ── Giving Back ── */}
+      <section className="py-20 px-4">
+        <div className="max-w-5xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
+              Social Impact
             </p>
-            <p>
-              This commitment extends to our hospitality venture, Hotel Peace Land, located in the
-              sacred heart of Lumbini.
-            </p>
-            <p>
-              We believe that every act of kindness can spark a lasting impact. With your trust and
-              support, we continue to champion community welfare, promote sustainable growth, and
-              inspire hope across Nepal.
-            </p>
-            <p className="font-bold text-[#2257A6]">
-              We believe that every act of kindness can spark a lasting impact.
-            </p>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a3a6e] mb-3">
+              Giving Back to the Community
+            </h2>
+            <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
+          </div>
+
+          {/* Card */}
+          <div className="bg-white rounded-3xl border border-blue-50 shadow-[0_8px_40px_rgba(52,152,219,0.10)] overflow-hidden">
+            {/* Top gradient bar */}
+            <div className="h-1 bg-linear-to-r from-[#2357A6] to-[#3498db]" />
+
+            <div className="p-8 md:p-12">
+              {/* Icon */}
+              <div className="flex justify-center mb-8">
+                <div className="bg-linear-to-br from-[#2357A6] to-[#3498db] p-4 rounded-2xl shadow-[0_8px_24px_rgba(52,152,219,0.3)]">
+                  <HeartIcon className="w-8 h-8 text-white" />
+                </div>
+              </div>
+
+              <div className="space-y-5 text-gray-500 leading-[1.9] text-[15px] text-center max-w-3xl mx-auto">
+                <p>
+                  Our mission goes beyond business — it's about building a better tomorrow. A
+                  portion of the profits generated through our operations at NPWC is proudly donated
+                  to charitable foundations and social initiatives that uplift communities across
+                  Nepal.
+                </p>
+                <p>
+                  This commitment extends to our hospitality venture, Hotel Peace Land, located in
+                  the sacred heart of Lumbini.
+                </p>
+                <p>
+                  We believe that every act of kindness can spark a lasting impact. With your trust
+                  and support, we continue to champion community welfare, promote sustainable
+                  growth, and inspire hope across Nepal.
+                </p>
+              </div>
+
+              {/* Highlight quote */}
+              <div className="mt-10 mx-auto max-w-2xl border-l-4 border-[#3498db] bg-[#f0f6ff] rounded-r-2xl px-6 py-4">
+                <p className="text-[#1a3a6e] font-bold text-base leading-relaxed">
+                  "Every act of kindness can spark a lasting impact."
+                </p>
+              </div>
+
+              {/* Stats row */}
+              <div className="mt-10 grid grid-cols-3 gap-4">
+                {[
+                  { value: '1978', label: 'Since' },
+                  { value: '100%', label: 'Commitment' },
+                  { value: '∞', label: 'Impact' },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="text-center py-4 px-3 rounded-2xl bg-[#f0f6ff] border border-blue-50"
+                  >
+                    <p className="text-2xl font-extrabold text-[#2357A6]">{stat.value}</p>
+                    <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mt-1">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -9,10 +9,10 @@ export default function Footer() {
     <footer className="bg-linear-to-br from-[#0f2557] via-[#1a3a6e] to-[#1e4ca1] text-white pt-16 pb-6 font-sans w-full overflow-x-clip relative">
       {/* Top wave */}
       <div
-        className="absolute top-0 left-0 right-0 h-8 pointer-events-none"
+        className="absolute top-0 left-0 w-full h-8 pointer-events-none overflow-hidden"
         style={{
           background: '#f0f6ff',
-          clipPath: 'ellipse(55% 100% at 50% 0%)',
+          clipPath: 'ellipse(50% 100% at 50% 0%)', // Changed 55% to 50% to prevent edge-bleeding
         }}
       />
 
