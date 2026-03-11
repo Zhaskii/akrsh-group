@@ -38,9 +38,12 @@ export default function FeaturedProducts() {
 
   useEffect(() => {
     if (isPaused || !mounted || products.length === 0) return
+
+    // The interval is set to 3000ms (3 seconds)
     const interval = setInterval(() => {
       handleNext()
-    }, 1000)
+    }, 3000)
+
     return () => clearInterval(interval)
   }, [currentIndex, isPaused, mounted, products.length])
 
@@ -65,7 +68,8 @@ export default function FeaturedProducts() {
   const getVisibleImages = () => {
     if (products.length === 0) return []
     const visible = []
-    const imagesToShow = window.innerWidth >= 768 ? Math.min(3, products.length) : 1
+    const imagesToShow =
+      typeof window !== 'undefined' && window.innerWidth >= 768 ? Math.min(3, products.length) : 1
     for (let i = 0; i < imagesToShow; i++) {
       visible.push(products[(currentIndex + i) % products.length])
     }
