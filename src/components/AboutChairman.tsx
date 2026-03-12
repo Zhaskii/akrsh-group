@@ -1,51 +1,144 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import {
   ChevronRightIcon,
   TrophyIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ChevronLeftIcon,
 } from '@heroicons/react/24/outline'
 import PageBanner from './PageBanner'
-import { HomeIcon, CheckCircleIcon } from '@heroicons/react/24/solid'
-import { allAwards, galleryImages, positions, videoData } from '@/constant/chairman.profile.data'
+import { CheckCircleIcon, HomeIcon } from '@heroicons/react/24/solid'
+import { allAwards, positions } from '@/constant/chairman.profile.data'
 import chairman from '@/assets/chairman&ceo/Rajesh-Kazi-Shrestha-Arksh-Group.jpg'
+
+const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
+
+// Helper to get Youtube Thumbnail from URL (Consistent with NewsRoom)
+function getYouTubeId(url: string): string | null {
+  const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
+  const match = url.match(regExp)
+  return match ? match[1] : null
+}
 
 export default function AboutChairman() {
   const [isExpanded, setIsExpanded] = useState(false)
   const visibleAwards = isExpanded ? allAwards : allAwards.slice(0, 2)
 
+  const [videoData, setVideoData] = useState<any[]>([])
+  const [galleryImages, setGalleryImages] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  const [videoIndex, setVideoIndex] = useState(0)
+  const [galleryIndex, setGalleryIndex] = useState(0)
+  const [isPausedVideo, setIsPausedVideo] = useState(false)
+  const [isPausedGallery, setIsPausedGallery] = useState(false)
+  const [itemsToShow, setItemsToShow] = useState({ videos: 3, gallery: 4 })
+
+  const getImageUrl = (urlPath: string | undefined) => {
+    if (!urlPath) return ''
+    return urlPath.startsWith('http') ? urlPath : `${PAYLOAD_BASE_URL}${urlPath}`
+  }
+
+  useEffect(() => {
+    const fetchChairmanData = async () => {
+      try {
+        setLoading(true)
+        // Updated to use youtube-news with chairman filter
+        const [videoRes, photoRes] = await Promise.all([
+          fetch(
+            `${PAYLOAD_BASE_URL}/api/youtube-news?where[cornerType][equals]=chairman&sort=order&limit=100`,
+          ),
+          fetch(`${PAYLOAD_BASE_URL}/api/md-photos?depth=1&limit=100`),
+        ])
+        const videoJson = await videoRes.json()
+        const photoJson = await photoRes.json()
+        if (videoJson.docs) setVideoData(videoJson.docs)
+        if (photoJson.docs) setGalleryImages(photoJson.docs)
+      } catch (error) {
+        console.error('Connection Error:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchChairmanData()
+  }, [])
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth
+      setItemsToShow({
+        videos: width < 768 ? 1 : width < 1024 ? 2 : 3,
+        gallery: width < 640 ? 1 : width < 768 ? 2 : width < 1024 ? 3 : 4,
+      })
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const nextVideo = useCallback(() => {
+    const maxIndex = Math.max(0, videoData.length - itemsToShow.videos)
+    if (maxIndex === 0) return
+    setVideoIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
+  }, [videoData.length, itemsToShow.videos])
+
+  const prevVideo = () => {
+    const maxIndex = Math.max(0, videoData.length - itemsToShow.videos)
+    if (maxIndex === 0) return
+    setVideoIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
+  }
+
+  const nextGallery = useCallback(() => {
+    const maxIndex = Math.max(0, galleryImages.length - itemsToShow.gallery)
+    if (maxIndex === 0) return
+    setGalleryIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
+  }, [galleryImages.length, itemsToShow.gallery])
+
+  const prevGallery = () => {
+    const maxIndex = Math.max(0, galleryImages.length - itemsToShow.gallery)
+    if (maxIndex === 0) return
+    setGalleryIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
+  }
+
+  useEffect(() => {
+    if (isPausedVideo || videoData.length <= itemsToShow.videos) return
+    const interval = setInterval(nextVideo, 3000)
+    return () => clearInterval(interval)
+  }, [isPausedVideo, nextVideo, videoData.length, itemsToShow.videos])
+
+  useEffect(() => {
+    if (isPausedGallery || galleryImages.length <= itemsToShow.gallery) return
+    const interval = setInterval(nextGallery, 3000)
+    return () => clearInterval(interval)
+  }, [isPausedGallery, nextGallery, galleryImages.length, itemsToShow.gallery])
+
   return (
-    <main className="bg-[#f0f6ff] min-h-screen pb-20 font-sans">
+    <main className="bg-[#f0f6ff] min-h-screen pb-24 font-sans overflow-x-hidden">
       <PageBanner
         title="Message from Managing Director"
         padding="py-12 px-6"
-        width="w-full mx-auto"
-        textAlign="center"
         breadcrumb={[
           { name: 'Home', href: '/', icon: <HomeIcon className="w-4 h-4" /> },
           { name: 'MD Message' },
         ]}
       />
 
-      {/* ── MESSAGE & BIO ── */}
+      {/* ── PROFILE / BIO ── */}
       <section className="max-w-7xl mx-auto px-6 md:px-12 mt-16">
         <div className="bg-white rounded-3xl shadow-[0_8px_40px_rgba(52,152,219,0.10)] flex flex-col lg:flex-row overflow-hidden border border-blue-50">
-          {/* Left: photo */}
           <div className="lg:w-2/5 p-8 bg-linear-to-b from-[#f8fbff] to-white flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-blue-50">
             <div className="relative rounded-2xl overflow-hidden shadow-[0_12px_40px_rgba(52,152,219,0.18)] w-full aspect-square mb-7 group">
               <Image
                 src={chairman}
-                alt="Rajesh Kaji Shrestha"
+                alt="Dr. Rajesh Kazi Shrestha"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
-                sizes="(max-width: 1024px) 100vw, 40vw"
+                priority
               />
-              {/* linear overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-[#0f2050]/60 to-transparent" />
-              {/* Years badge */}
+              <div className="absolute inset-0 bg-linear-to-t from-[#0f2050]/65 to-transparent" />
               <div className="absolute bottom-0 right-0 bg-linear-to-br from-[#2357A6] to-[#3498db] text-white px-5 py-3 rounded-tl-2xl text-center shadow-lg z-10">
                 <p className="text-2xl font-extrabold tracking-tight leading-none">47+</p>
                 <p className="text-[9px] uppercase tracking-widest mt-0.5 opacity-80">
@@ -53,7 +146,6 @@ export default function AboutChairman() {
                 </p>
               </div>
             </div>
-
             <div className="text-center">
               <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#3498db] mb-2">
                 Managing Director
@@ -68,25 +160,19 @@ export default function AboutChairman() {
             </div>
           </div>
 
-          {/* Right: message */}
           <div className="lg:w-3/5 p-8 lg:p-12">
-            {/* Top gradient bar */}
             <div className="h-0.75 w-full bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mb-8" />
-
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
               A Message From Our Leader
             </p>
             <h3 className="text-[#1a3a6e] text-xl font-bold mb-6 leading-snug">
               "Dear Valued Partners, Clients, and Team Members"
             </h3>
-
             <p className="text-gray-500 leading-[1.85] mb-6 text-[15px]">
               It is with great pleasure that I welcome you to Arksh Group. As the Managing Director,
               I take immense pride in our organization's journey of growth, innovation, and
               excellence.
             </p>
-
-            {/* Pull quote */}
             <div className="relative bg-[#f0f6ff] border-l-4 border-[#3498db] rounded-r-2xl px-6 py-5 mb-7">
               <span className="absolute -top-2 left-4 text-6xl text-[#3498db]/15 font-serif leading-none select-none">
                 "
@@ -96,8 +182,6 @@ export default function AboutChairman() {
                 delivering exceptional value across diverse sectors.
               </p>
             </div>
-
-            {/* Two-column checklist */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-7">
               {[
                 'The business landscape is constantly evolving, presenting both challenges and opportunities. At Arksh Group, we embrace change and adaptability as essential components of our business strategy.',
@@ -112,19 +196,15 @@ export default function AboutChairman() {
                 </div>
               ))}
             </div>
-
             <p className="text-gray-500 leading-[1.85] text-[15px]">
               As we look to the future, we remain committed to sustainable growth, socially
-              responsible business practices, and creating value for all our stakeholders. I extend
-              my heartfelt gratitude to our clients, partners, and team members for their trust,
-              support, and dedication. Together, we will continue to push boundaries and create a
-              legacy of excellence.
+              responsible business practices, and creating value for all our stakeholders.
             </p>
           </div>
         </div>
       </section>
 
-      {/* ── AWARDS TIMELINE ── */}
+      {/* ── AWARDS ── */}
       <section className="max-w-5xl mx-auto px-6 mt-24">
         <div className="text-center mb-16">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
@@ -135,34 +215,24 @@ export default function AboutChairman() {
           </h2>
           <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
         </div>
-
         <div className="relative border-l-2 border-blue-100 ml-4 md:ml-32 space-y-8 pb-10">
           {visibleAwards.map((award, idx) => (
             <div key={idx} className="relative pl-10 group cursor-pointer">
-              {/* Timeline dot */}
-              <div className="absolute -left-1.75 top-5 w-3.5 h-3.5 rounded-full bg-white border-2 border-[#3498db] z-10 transition-all duration-300 group-hover:bg-[#3498db] group-hover:scale-150 group-hover:shadow-[0_0_10px_rgba(52,152,219,0.4)]" />
-              {/* Year label */}
-              <span className="absolute -left-28 top-4 text-[#2357A6] font-bold text-base hidden md:block opacity-30 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+              <div className="absolute -left-1.75 top-5 w-3.5 h-3.5 rounded-full bg-white border-2 border-[#3498db] z-10 transition-all group-hover:bg-[#3498db] group-hover:scale-150" />
+              <span className="absolute -left-28 top-4 text-[#2357A6] font-bold text-base hidden md:block opacity-30 group-hover:opacity-100 transition-all">
                 {award.year}
               </span>
-              {/* Card */}
-              <div className="bg-white p-6 rounded-2xl border border-blue-50 shadow-[0_4px_16px_rgba(52,152,219,0.07)] transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-[0_16px_48px_rgba(52,152,219,0.14)] group-hover:border-blue-100 relative">
-                <div className="absolute top-5 right-5 transition-all duration-300 opacity-10 group-hover:opacity-100 group-hover:scale-110">
-                  <TrophyIcon className="w-5 h-5 text-[#3498db]" />
-                </div>
-                <h4 className="text-[#1a3a6e] text-base font-bold pr-10 leading-snug">
-                  {award.title}
-                </h4>
-                <p className="text-gray-400 text-[13px] mt-2.5 leading-relaxed">{award.desc}</p>
+              <div className="bg-white p-6 rounded-2xl border border-blue-50 shadow-sm transition-all group-hover:-translate-y-1.5 group-hover:shadow-xl">
+                <h4 className="text-[#1a3a6e] text-base font-bold pr-10">{award.title}</h4>
+                <p className="text-gray-400 text-[13px] mt-2.5">{award.desc}</p>
               </div>
             </div>
           ))}
         </div>
-
         <div className="text-center mt-10">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="inline-flex items-center gap-2 border border-blue-200 text-[#2357A6] px-8 py-3 rounded-full hover:bg-linear-to-r hover:from-[#2357A6] hover:to-[#3498db] hover:text-white hover:border-transparent transition-all duration-300 font-semibold text-xs uppercase tracking-widest shadow-sm hover:shadow-[0_8px_24px_rgba(52,152,219,0.25)] hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 border border-blue-200 text-[#2357A6] px-8 py-3 rounded-full hover:bg-[#2357A6] hover:text-white transition-all text-xs uppercase tracking-widest font-semibold"
           >
             {isExpanded ? (
               <>
@@ -182,7 +252,6 @@ export default function AboutChairman() {
       {/* ── POSITIONS ── */}
       <section className="py-20 mt-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
-          {/* Header */}
           <div className="text-center mb-14">
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
               Leadership Roles
@@ -190,120 +259,164 @@ export default function AboutChairman() {
             <h2 className="text-3xl sm:text-4xl font-bold text-[#1a3a6e] mb-3">
               Positions &amp; Affiliations
             </h2>
-            <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto mb-4" />
-            <p className="text-gray-400 text-sm max-w-xl mx-auto leading-relaxed">
-              Dr. Rajesh Kazi Shrestha holds the following positions in different associations and
-              organizations
-            </p>
+            <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
           </div>
-
           <div className="flex flex-col gap-3">
             {positions.map((pos, idx) => (
               <div
                 key={idx}
-                className="group flex items-center bg-[#f0f6ff] rounded-2xl overflow-hidden border border-blue-50 shadow-[0_2px_8px_rgba(52,152,219,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_28px_rgba(52,152,219,0.12)] hover:border-blue-100 cursor-default"
+                className="group flex items-center bg-[#f0f6ff] rounded-2xl overflow-hidden border border-blue-50 transition-all hover:-translate-y-0.5 shadow-sm"
               >
-                {/* Title */}
-                <div className="w-[40%] md:w-[35%] px-5 py-4 font-bold text-[#1a3a6e] text-sm md:text-[13px] group-hover:text-[#3498db] transition-colors duration-200 leading-snug">
+                <div className="w-[40%] md:w-[35%] px-5 py-4 font-bold text-[#1a3a6e] text-sm group-hover:text-[#3498db] transition-colors">
                   {pos.title}
                 </div>
-                {/* Separator */}
-                <div className="flex items-center px-2 shrink-0">
-                  <ChevronRightIcon className="w-3.5 h-3.5 text-[#3498db] opacity-40 group-hover:opacity-100 -mr-1.5 transition-opacity" />
-                  <ChevronRightIcon className="w-3.5 h-3.5 text-[#3498db] opacity-20 group-hover:opacity-60 transition-opacity" />
-                </div>
-                {/* Organization */}
-                <div className="flex-1 px-5 py-4 text-right text-gray-500 text-sm md:text-[13px] font-medium leading-snug">
+                <div className="flex-1 px-5 py-4 text-right text-gray-500 text-sm font-medium">
                   {pos.organization}
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* ── VIDEO MESSAGES ── */}
-      <section className="py-20 bg-[#f0f6ff]">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
-              Watch &amp; Listen
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#1a3a6e] mb-3">
-              Current Message Videos
-            </h2>
-            <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7">
-            {videoData.map((video) => (
-              <a
-                key={video.id}
-                href={video.youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group block"
-              >
-                <div className="relative aspect-video rounded-2xl overflow-hidden border border-blue-50 shadow-[0_4px_20px_rgba(52,152,219,0.08)] transition-all duration-300 group-hover:shadow-[0_16px_48px_rgba(52,152,219,0.18)] group-hover:-translate-y-1.5">
-                  <Image
-                    src={video.thumbnail}
-                    alt="Video Thumbnail"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  />
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-transparent" />
-                  {/* Top accent */}
-                  <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] translate-y-0.75 group-hover:translate-y-0 transition-transform duration-300" />
-                  {/* Play button */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300">
-                      <div className="w-0 h-0 border-t-[9px] border-t-transparent border-l-16 border-l-white border-b-[9px] border-b-transparent ml-1" />
-                    </div>
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── GALLERY ── */}
-      <section className="max-w-7xl mx-auto px-6 py-20">
-        <div className="text-center mb-14">
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
-            Photo Gallery
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#1a3a6e] mb-3">
-            MD Gallery Collection
-          </h2>
-          <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto mb-4" />
-          <p className="text-gray-400 text-sm">
-            Browse through our collection of memorable moments and milestones
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {galleryImages.map((src, idx) => (
-            <div
-              key={idx}
-              className="group relative aspect-4/3 rounded-2xl overflow-hidden border border-blue-50 shadow-[0_4px_16px_rgba(52,152,219,0.07)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_16px_48px_rgba(52,152,219,0.16)] cursor-pointer"
-            >
-              <Image
-                src={src}
-                alt={`MD Gallery milestone ${idx + 1}`}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              />
-              {/* Hover overlay */}
-              <div className="absolute inset-0 bg-linear-to-t from-[#1a3a6e]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              {/* Top accent bar */}
-              <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] translate-y-0.75 group-hover:translate-y-0 transition-transform duration-300" />
+        {/* ── VIDEO MESSAGES (Chairman Corner) ── */}
+        {!loading && videoData.length > 0 && (
+          <div
+            className="py-20 max-w-7xl mx-auto px-6 mt-4"
+            onMouseEnter={() => setIsPausedVideo(true)}
+            onMouseLeave={() => setIsPausedVideo(false)}
+          >
+            <div className="text-center mb-12">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
+                Watch &amp; Listen
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#1a3a6e] mb-3">Video Messages</h2>
+              <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
             </div>
-          ))}
-        </div>
+            <div className="relative px-12">
+              {videoData.length > itemsToShow.videos && (
+                <>
+                  <button
+                    onClick={prevVideo}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                  >
+                    <ChevronLeftIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextVideo}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                  >
+                    <ChevronRightIcon className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-700 ease-in-out"
+                  style={{
+                    transform: `translateX(-${videoIndex * (100 / itemsToShow.videos)}%)`,
+                    width: '100%',
+                  }}
+                >
+                  {videoData.map((video, i) => {
+                    const videoId = getYouTubeId(video.youtubeUrl)
+                    const thumbnailUrl = videoId
+                      ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                      : null
+                    return (
+                      <div
+                        key={`video-${i}`}
+                        className="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-3 shrink-0"
+                      >
+                        <a
+                          href={video.youtubeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group relative aspect-video rounded-2xl overflow-hidden shadow-md block bg-black transition-all hover:shadow-xl hover:-translate-y-1.5"
+                        >
+                          {thumbnailUrl && (
+                            <Image
+                              src={thumbnailUrl}
+                              alt="Chairman Video"
+                              fill
+                              className="object-cover opacity-90 group-hover:scale-105 transition-all"
+                            />
+                          )}
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
+                              <div className="w-0 h-0 border-t-[9px] border-t-transparent border-l-16 border-l-white border-b-[9px] border-b-transparent ml-1" />
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── PHOTO GALLERY ── */}
+        {!loading && galleryImages.length > 0 && (
+          <div
+            className="py-20 max-w-7xl mx-auto px-6 border-t border-blue-50"
+            onMouseEnter={() => setIsPausedGallery(true)}
+            onMouseLeave={() => setIsPausedGallery(false)}
+          >
+            <div className="text-center mb-12">
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
+                Visual Moments
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-[#1a3a6e] mb-3">Photo Gallery</h2>
+              <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
+            </div>
+            <div className="relative px-12">
+              {galleryImages.length > itemsToShow.gallery && (
+                <>
+                  <button
+                    onClick={prevGallery}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                  >
+                    <ChevronLeftIcon className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={nextGallery}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                  >
+                    <ChevronRightIcon className="w-5 h-5" />
+                  </button>
+                </>
+              )}
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-700 ease-in-out"
+                  style={{
+                    transform: `translateX(-${galleryIndex * (100 / itemsToShow.gallery)}%)`,
+                    width: '100%',
+                  }}
+                >
+                  {galleryImages.map((item, i) => (
+                    <div
+                      key={`gallery-${i}`}
+                      className="min-w-full sm:min-w-[50%] md:min-w-[33.333%] lg:min-w-[25%] px-2 shrink-0"
+                    >
+                      <div className="relative aspect-square rounded-2xl overflow-hidden border border-blue-50 shadow-sm group cursor-pointer transition-all hover:-translate-y-1.5 hover:shadow-xl">
+                        {getImageUrl(item.image?.url) && (
+                          <Image
+                            src={getImageUrl(item.image.url)}
+                            alt={item.caption || 'Gallery Image'}
+                            fill
+                            className="object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
     </main>
   )

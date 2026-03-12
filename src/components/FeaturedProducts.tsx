@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 
 interface FeaturedProduct {
@@ -10,6 +10,22 @@ interface FeaturedProduct {
     alt?: string
   }
   order: number
+}
+
+// Custom hook to handle reliable intervals in React
+function useInterval(callback: () => void, delay: number | null) {
+  const savedCallback = useRef(callback)
+
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    if (delay !== null) {
+      const id = setInterval(() => savedCallback.current(), delay)
+      return () => clearInterval(id)
+    }
+  }, [delay])
 }
 
 export default function FeaturedProducts() {
@@ -25,7 +41,7 @@ export default function FeaturedProducts() {
       try {
         const response = await fetch('/api/featured-products?sort=order&limit=10')
         const data = await response.json()
-        setProducts(data.docs)
+        setProducts(data.docs || [])
       } catch (error) {
         console.error('Error fetching featured products:', error)
       } finally {
@@ -36,34 +52,35 @@ export default function FeaturedProducts() {
     fetchProducts()
   }, [])
 
-  useEffect(() => {
-    if (isPaused || !mounted || products.length === 0) return
+  const handleNext = useCallback(() => {
+    if (products.length <= 1 || isTransitioning) return
 
-    // The interval is set to 3000ms (3 seconds)
-    const interval = setInterval(() => {
+    setIsTransitioning(true)
+    setCurrentIndex((prev) => (prev + 1) % products.length)
+
+    setTimeout(() => {
+      setIsTransitioning(false)
+    }, 500)
+  }, [products.length, isTransitioning])
+
+  const handlePrev = useCallback(() => {
+    if (products.length <= 1 || isTransitioning) return
+
+    setIsTransitioning(true)
+    setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)
+
+    setTimeout(() => {
+      setIsTransitioning(false)
+    }, 500)
+  }, [products.length, isTransitioning])
+
+  // FIXED: Reliable Auto-slideshow using the custom hook
+  useInterval(
+    () => {
       handleNext()
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [currentIndex, isPaused, mounted, products.length])
-
-  const handleNext = () => {
-    if (products.length === 0) return
-    setIsTransitioning(true)
-    setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % products.length)
-      setIsTransitioning(false)
-    }, 400)
-  }
-
-  const handlePrev = () => {
-    if (products.length === 0) return
-    setIsTransitioning(true)
-    setTimeout(() => {
-      setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)
-      setIsTransitioning(false)
-    }, 400)
-  }
+    },
+    !isPaused && mounted && products.length > 1 ? 3000 : null,
+  )
 
   const getVisibleImages = () => {
     if (products.length === 0) return []
@@ -139,7 +156,6 @@ export default function FeaturedProducts() {
           pointer-events: none;
         }
 
-        /* Eyebrow */
         .fp-eyebrow {
           font-size: 0.68rem;
           font-weight: 600;
@@ -158,7 +174,6 @@ export default function FeaturedProducts() {
           opacity: 0.5;
         }
 
-        /* Ornament */
         .fp-ornament {
           display: flex; align-items: center; gap: 12px; justify-content: center;
           margin: 10px 0 16px;
@@ -178,7 +193,6 @@ export default function FeaturedProducts() {
           opacity: 0.6;
         }
 
-        /* Nav buttons */
         .fp-nav-btn {
           width: 46px; height: 46px;
           border-radius: 50%;
@@ -198,7 +212,6 @@ export default function FeaturedProducts() {
           transform: scale(1.08);
         }
 
-        /* Image card */
         .fp-img-card {
           position: relative;
           border-radius: 18px;
@@ -211,15 +224,7 @@ export default function FeaturedProducts() {
           box-shadow: 0 20px 52px rgba(33,154,234,0.18), 0 4px 16px rgba(0,0,0,0.1);
           transform: translateY(-4px);
         }
-        .fp-img-card::after {
-          content: '';
-          position: absolute; inset: 0;
-          background: linear-gradient(to top, rgba(35,87,166,0.12) 0%, transparent 50%);
-          pointer-events: none;
-          border-radius: 18px;
-        }
 
-        /* Dot */
         .fp-dot {
           height: 8px;
           border-radius: 100px;
@@ -235,11 +240,7 @@ export default function FeaturedProducts() {
           width: 8px;
           background: rgba(33,154,234,0.2);
         }
-        .fp-dot.inactive:hover {
-          background: rgba(33,154,234,0.4);
-        }
 
-        /* Counter */
         .fp-counter {
           font-family: 'Cormorant Garamond', serif;
           font-size: 0.85rem;
@@ -254,7 +255,6 @@ export default function FeaturedProducts() {
         onMouseLeave={() => setIsPaused(false)}
       >
         <div className="w-full px-5 sm:px-8 relative z-10">
-          {/* ── Header ── */}
           <div className="text-center mb-14">
             <div className="fp-eyebrow">Arksh Group</div>
 
@@ -279,22 +279,12 @@ export default function FeaturedProducts() {
               <div className="fp-orn-diamond" />
               <div className="fp-orn-line r" />
             </div>
-
-            <p
-              className="text-[#2357A6] font-medium"
-              style={{ fontSize: '0.82rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}
-            >
-              Discover our latest offerings
-            </p>
           </div>
 
-          {/* ── Carousel ── */}
           <div className="relative px-4 md:px-16 max-w-7xl mx-auto">
-            {/* Prev */}
             <button
               onClick={handlePrev}
               className="fp-nav-btn absolute left-0 top-1/2 -translate-y-1/2 z-20 hidden md:flex"
-              aria-label="Previous"
             >
               <svg
                 width="18"
@@ -310,11 +300,10 @@ export default function FeaturedProducts() {
               </svg>
             </button>
 
-            {/* Images */}
             <div
               className={`flex gap-4 sm:gap-6 transition-all duration-500 ease-in-out ${
                 isTransitioning
-                  ? 'opacity-30 scale-[0.985] blur-[1.5px]'
+                  ? 'opacity-30 scale-[0.985] blur-[1px]'
                   : 'opacity-100 scale-100 blur-0'
               }`}
             >
@@ -336,11 +325,9 @@ export default function FeaturedProducts() {
               ))}
             </div>
 
-            {/* Next */}
             <button
               onClick={handleNext}
               className="fp-nav-btn absolute right-0 top-1/2 -translate-y-1/2 z-20 hidden md:flex"
-              aria-label="Next"
             >
               <svg
                 width="18"
@@ -357,19 +344,16 @@ export default function FeaturedProducts() {
             </button>
           </div>
 
-          {/* ── Dots + Counter ── */}
           <div className="flex flex-col items-center gap-4 mt-12">
             <div className="flex items-center gap-2">
               {products.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => {
-                    if (currentIndex === idx) return
+                    if (currentIndex === idx || isTransitioning) return
                     setIsTransitioning(true)
-                    setTimeout(() => {
-                      setCurrentIndex(idx)
-                      setIsTransitioning(false)
-                    }, 300)
+                    setCurrentIndex(idx)
+                    setTimeout(() => setIsTransitioning(false), 500)
                   }}
                   className={`fp-dot ${currentIndex === idx ? 'active' : 'inactive'}`}
                   aria-label={`Go to slide ${idx + 1}`}

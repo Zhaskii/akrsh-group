@@ -22,6 +22,8 @@ import { FeaturedProducts } from './collections/FeaturedProducts'
 import { Companies } from './collections/Companies'
 import { Brands } from './collections/Brands'
 import { SocialVideos } from './collections/SocialVideos'
+import MDPhotos from './collections/MdPhotos'
+import { CeoPhotos } from './collections/CeoPhotos'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -55,10 +57,8 @@ export default buildConfig({
   cors: ['https://arkshgroup.com', 'https://www.arkshgroup.com'],
   collections: [
     Contact,
-
     Category,
     Media,
-
     Blog,
     Career,
     Applications,
@@ -72,6 +72,8 @@ export default buildConfig({
     Companies,
     Brands,
     SocialVideos,
+    MDPhotos,
+    CeoPhotos,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

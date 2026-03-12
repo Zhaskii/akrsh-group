@@ -84,7 +84,7 @@ export default function Header() {
       <div className="h-26.25 md:h-37.5 w-full bg-white" />
 
       <header
-        className={`fixed top-0 left-0 w-full z-50 transition-transform duration-500 ease-in-out bg-white/35 shadow-sm ${
+        className={`fixed top-0 left-0 w-full z-50 transition-transform duration-500 ease-in-out bg-white/25 shadow-sm ${
           isVisible ? 'translate-y-0' : '-translate-y-full'
         }`}
       >
@@ -220,7 +220,9 @@ export default function Header() {
                               <li
                                 key={sub.name}
                                 className="relative px-2 mx-1 hover:bg-blue-50/70 rounded-xl flex justify-between items-center transition-colors duration-150"
-                                onMouseEnter={() => hasChildren && setActiveNestedMenu(sub.name)}
+                                onMouseEnter={() =>
+                                  setActiveNestedMenu(hasChildren ? sub.name : null)
+                                }
                               >
                                 {sub.href ? (
                                   <Link

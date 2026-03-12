@@ -83,6 +83,8 @@ export interface Config {
     companies: Company;
     brands: Brand;
     'social-videos': SocialVideo;
+    'md-photos': MdPhoto;
+    'ceo-photos': CeoPhoto;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -105,6 +107,8 @@ export interface Config {
     companies: CompaniesSelect<false> | CompaniesSelect<true>;
     brands: BrandsSelect<false> | BrandsSelect<true>;
     'social-videos': SocialVideosSelect<false> | SocialVideosSelect<true>;
+    'md-photos': MdPhotosSelect<false> | MdPhotosSelect<true>;
+    'ceo-photos': CeoPhotosSelect<false> | CeoPhotosSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -489,6 +493,31 @@ export interface SocialVideo {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "md-photos".
+ */
+export interface MdPhoto {
+  id: string;
+  image: string | Media;
+  caption?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ceo-photos".
+ */
+export interface CeoPhoto {
+  id: string;
+  image: string | Media;
+  /**
+   * Higher numbers appear first in the slider
+   */
+  displayOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -557,6 +586,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'social-videos';
         value: string | SocialVideo;
+      } | null)
+    | ({
+        relationTo: 'md-photos';
+        value: string | MdPhoto;
+      } | null)
+    | ({
+        relationTo: 'ceo-photos';
+        value: string | CeoPhoto;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -834,6 +871,26 @@ export interface SocialVideosSelect<T extends boolean = true> {
   url?: T;
   order?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "md-photos_select".
+ */
+export interface MdPhotosSelect<T extends boolean = true> {
+  image?: T;
+  caption?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ceo-photos_select".
+ */
+export interface CeoPhotosSelect<T extends boolean = true> {
+  image?: T;
+  displayOrder?: T;
   updatedAt?: T;
   createdAt?: T;
 }

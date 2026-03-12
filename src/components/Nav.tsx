@@ -58,6 +58,19 @@ const Nav: React.FC = () => {
                 Chairman Gallery
               </Link>
             </li>
+
+            <li>
+              <Link href="/admin/collections/md-photos">
+                <span className="nav-icon">📸</span>
+                MD Photos
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/collections/ceo-photos">
+                <span className="nav-icon">📸</span>
+                CEO Photos
+              </Link>
+            </li>
             <li>
               <Link href="/admin/collections/media">
                 <span className="nav-icon">🖼️</span>

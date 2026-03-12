@@ -345,7 +345,7 @@ export default function Hero() {
 
       <div className="hero-root">
         {/* ── Cinematic Slideshow ── */}
-        <div className="relative w-full h-[38vh] sm:h-[62vh] md:h-[74vh] lg:h-[84vh] xl:h-[90vh] overflow-hidden bg-[#050c1e]">
+        <div className="relative w-full h-[25vh] sm:h-[62vh] md:h-[74vh] lg:h-[84vh] xl:h-[90vh] overflow-hidden bg-[#050c1e]">
           {/* Slides */}
           {HERO_IMAGES.map((imageAsset, index) => (
             <div
@@ -360,7 +360,7 @@ export default function Hero() {
                 alt={`Arksh Group ${index + 1}`}
                 fill
                 priority={index === 0}
-                className="object-cover object-center"
+                className="object-fill object-center"
                 style={{
                   transform: index === currentImageIndex ? 'scale(1)' : 'scale(1.04)',
                   transition: 'transform 6s ease-out',
