@@ -80,7 +80,7 @@ export default function ArkshHelps() {
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a3a6e] mb-3">
             Get More Insights
           </h2>
-          <div className="w-12 h-[3px] bg-gradient-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
+          <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
         </div>
 
         {loading ? (
@@ -117,9 +117,9 @@ export default function ArkshHelps() {
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     {/* Top accent bar */}
-                    <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#2357A6] to-[#3498db] -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                   </div>
 
                   {/* Content */}
@@ -170,7 +170,7 @@ export default function ArkshHelps() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a3a6e] mb-3">
               Delivering Happiness
             </h2>
-            <div className="w-12 h-[3px] bg-gradient-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
+            <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
           </div>
 
           <div className="max-w-7xl mx-auto px-4">
@@ -196,13 +196,13 @@ export default function ArkshHelps() {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                         unoptimized
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/20 to-transparent" />
+                      <div className="absolute inset-0 bg-linear-to-t from-black/55 via-black/20 to-transparent" />
                       {/* Top accent */}
-                      <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-[#2357A6] to-[#3498db] -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                      <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                       {/* Play button */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300">
-                          <div className="w-0 h-0 border-t-[10px] border-t-transparent border-l-[18px] border-l-white border-b-[10px] border-b-transparent ml-1" />
+                          <div className="w-0 h-0 border-t-10 border-t-transparent border-l-18 border-l-white border-b-10 border-b-transparent ml-1" />
                         </div>
                       </div>
                       {/* Platform badge */}
@@ -223,7 +223,7 @@ export default function ArkshHelps() {
       {/* ── Video Modal ── */}
       {activeVideo && activeVideo.type === 'youtube' && (
         <div
-          className="fixed inset-0 z-[100] bg-black/92 flex items-center justify-center p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-100 bg-black/92 flex items-center justify-center p-4 backdrop-blur-sm"
           onClick={() => setActiveVideo(null)}
         >
           <div
@@ -231,7 +231,7 @@ export default function ArkshHelps() {
             onClick={(e) => e.stopPropagation()}
           >
             <button
-              className="absolute top-3 right-3 z-[110] text-white bg-white/10 backdrop-blur-sm border border-white/20 w-9 h-9 rounded-xl flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-200 text-sm font-bold"
+              className="absolute top-3 right-3 z-110 text-white bg-white/10 backdrop-blur-sm border border-white/20 w-9 h-9 rounded-xl flex items-center justify-center hover:bg-red-600 hover:border-red-600 transition-all duration-200 text-sm font-bold"
               onClick={() => setActiveVideo(null)}
             >
               ✕
@@ -256,17 +256,17 @@ export default function ArkshHelps() {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a3a6e] mb-3">
               Giving Back to the Community
             </h2>
-            <div className="w-12 h-[3px] bg-gradient-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
+            <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto" />
           </div>
 
           <div className="bg-white rounded-3xl border border-blue-50 shadow-[0_8px_40px_rgba(52,152,219,0.10)] overflow-hidden">
-            {/* Top gradient bar */}
-            <div className="h-[3px] bg-gradient-to-r from-[#2357A6] to-[#3498db]" />
+            {/* Top linear bar */}
+            <div className="h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db]" />
 
             <div className="p-8 md:p-12">
               {/* Icon */}
               <div className="flex justify-center mb-8">
-                <div className="bg-gradient-to-br from-[#2357A6] to-[#3498db] p-4 rounded-2xl shadow-[0_8px_24px_rgba(52,152,219,0.30)]">
+                <div className="bg-linear-to-br from-[#2357A6] to-[#3498db] p-4 rounded-2xl shadow-[0_8px_24px_rgba(52,152,219,0.30)]">
                   <HeartIcon className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -307,7 +307,7 @@ export default function ArkshHelps() {
                     key={stat.label}
                     className="text-center py-5 px-3 rounded-2xl bg-[#f0f6ff] border border-blue-50 group hover:border-blue-100 hover:shadow-[0_4px_16px_rgba(52,152,219,0.08)] transition-all duration-200"
                   >
-                    <p className="text-2xl font-extrabold bg-gradient-to-r from-[#2357A6] to-[#3498db] bg-clip-text text-transparent">
+                    <p className="text-2xl font-extrabold bg-linear-to-r from-[#2357A6] to-[#3498db] bg-clip-text text-transparent">
                       {stat.value}
                     </p>
                     <p className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mt-1">
