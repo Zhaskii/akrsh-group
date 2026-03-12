@@ -345,7 +345,7 @@ export default function Hero() {
 
       <div className="hero-root">
         {/* ── Cinematic Slideshow ── */}
-        <div className="relative w-full h-[25vh] sm:h-[62vh] md:h-[74vh] lg:h-[84vh] xl:h-[90vh] overflow-hidden bg-[#050c1e]">
+        <div className="relative w-full h-[25vh] sm:h-[62vh] md:h-[74vh] lg:h-[84vh] xl:h-[84vh] overflow-hidden bg-[#050c1e]">
           {/* Slides */}
           {HERO_IMAGES.map((imageAsset, index) => (
             <div
