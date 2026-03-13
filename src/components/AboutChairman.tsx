@@ -38,7 +38,7 @@ function getYouTubeId(url: string): string | null {
 
 export default function AboutChairman() {
   const [isExpanded, setIsExpanded] = useState(false)
-  const visibleAwards = isExpanded ? allAwards : allAwards.slice(0, 2)
+  const visibleAwards = isExpanded ? allAwards : allAwards.slice(0, 4)
 
   const [videoData, setVideoData] = useState<any[]>([])
   const [galleryImages, setGalleryImages] = useState<any[]>([])
