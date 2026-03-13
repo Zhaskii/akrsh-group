@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { ReactNode, CSSProperties } from 'react'
 
@@ -100,18 +102,28 @@ const PageBanner: React.FC<PageBannerProps> = ({
           >
             {breadcrumb.map((item, index) => (
               <span key={index} className="flex items-center gap-1.5">
-                {item.icon && <span className="w-4 h-4 opacity-80">{item.icon}</span>}
-
                 {item.href ? (
                   <Link
                     href={item.href}
-                    className="hover:opacity-100 transition-opacity duration-200"
-                    style={{ color: textColor, opacity: 0.8 }}
+                    className="group flex items-center gap-1.5 transition-all duration-300"
+                    style={{ color: textColor }}
                   >
-                    {item.name}
+                    {/* Icon Glow */}
+                    {item.icon && (
+                      <span className="w-4 h-4 opacity-80 group-hover:opacity-100 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all duration-300">
+                        {item.icon}
+                      </span>
+                    )}
+                    {/* Text Glow */}
+                    <span className="opacity-80 group-hover:opacity-100 group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.8)] transition-all duration-300">
+                      {item.name}
+                    </span>
                   </Link>
                 ) : (
-                  <span style={{ opacity: index === 0 ? 1 : 0.95 }}>{item.name}</span>
+                  <span className="flex items-center gap-1.5">
+                    {item.icon && <span className="w-4 h-4 opacity-80">{item.icon}</span>}
+                    <span style={{ opacity: index === 0 ? 1 : 0.95 }}>{item.name}</span>
+                  </span>
                 )}
 
                 {index < breadcrumb.length - 1 && (

@@ -10,6 +10,7 @@ import {
   ChevronLeftIcon,
   PlayIcon,
 } from '@heroicons/react/24/solid'
+import NewsBG from '@/assets/heroBG/NewsRoomBG.png'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation } from 'swiper/modules'
@@ -126,7 +127,7 @@ export default function NewsRoom() {
       <section
         className="relative py-10 sm:py-14 md:py-21 text-center text-white"
         style={{
-          backgroundImage: "url('https://arkshgroup.com/banner4.png')",
+          backgroundImage: `url(${NewsBG.src})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

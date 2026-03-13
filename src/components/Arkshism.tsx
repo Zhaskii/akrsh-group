@@ -2,6 +2,9 @@
 
 import Link from 'next/link'
 import { motion, Variants } from 'framer-motion'
+import Image from 'next/image'
+import arkshLogo from '@/assets/logo/logo.jpg'
+import Starfield from '@/components/StarField' // Ensure this path matches your file structure
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -98,21 +101,6 @@ const PILLARS = [
   },
 ]
 
-const STARS = [
-  { top: '6%', left: '10%', size: 1.5, dur: '4s', delay: '0s', minOp: 0.2, maxOp: 0.8 },
-  { top: '13%', left: '77%', size: 1, dur: '3s', delay: '1s', minOp: 0.1, maxOp: 0.6 },
-  { top: '24%', left: '54%', size: 2, dur: '5s', delay: '0.5s', minOp: 0.15, maxOp: 0.7 },
-  { top: '38%', left: '5%', size: 1.5, dur: '3.5s', delay: '2s', minOp: 0.1, maxOp: 0.5 },
-  { top: '59%', left: '87%', size: 1, dur: '4.5s', delay: '1.5s', minOp: 0.2, maxOp: 0.65 },
-  { top: '71%', left: '21%', size: 2.5, dur: '6s', delay: '0.8s', minOp: 0.1, maxOp: 0.55 },
-  { top: '84%', left: '64%', size: 1, dur: '3s', delay: '3s', minOp: 0.15, maxOp: 0.7 },
-  { top: '4%', left: '39%', size: 1.5, dur: '4s', delay: '0.3s', minOp: 0.1, maxOp: 0.5 },
-  { top: '49%', left: '47%', size: 1, dur: '5s', delay: '2.5s', minOp: 0.1, maxOp: 0.4 },
-  { top: '91%', left: '9%', size: 2, dur: '4s', delay: '1.2s', minOp: 0.15, maxOp: 0.6 },
-  { top: '32%', left: '92%', size: 1, dur: '3.8s', delay: '0.6s', minOp: 0.1, maxOp: 0.5 },
-  { top: '77%', left: '43%', size: 1.5, dur: '4.2s', delay: '1.8s', minOp: 0.12, maxOp: 0.55 },
-]
-
 export default function Arkshism() {
   return (
     <>
@@ -125,16 +113,6 @@ export default function Arkshism() {
         /* ── Deep space background ── */
         .arkshism-bg {
           background: radial-gradient(ellipse at 20% 20%, #1e3f6e 0%, #152d52 35%, #0d1e38 70%, #080f1e 100%);
-        }
-
-        /* Stars */
-        .star {
-          position: absolute; border-radius: 50%; background: white;
-          animation: twinkle var(--dur, 3s) ease-in-out infinite var(--delay, 0s);
-        }
-        @keyframes twinkle {
-          0%, 100% { opacity: var(--min-op, 0.15); transform: scale(1); }
-          50%       { opacity: var(--max-op, 0.7);  transform: scale(1.4); }
         }
 
         /* Nebula */
@@ -341,25 +319,8 @@ export default function Arkshism() {
       `}</style>
 
       <section className="arkshism-root arkshism-bg relative overflow-hidden py-28 px-4 sm:px-6">
-        {/* ── Stars ── */}
-        {STARS.map((s, i) => (
-          <div
-            key={i}
-            className="star"
-            style={
-              {
-                top: s.top,
-                left: s.left,
-                width: s.size,
-                height: s.size,
-                '--dur': s.dur,
-                '--delay': s.delay,
-                '--min-op': s.minOp,
-                '--max-op': s.maxOp,
-              } as React.CSSProperties
-            }
-          />
-        ))}
+        {/* ── High Performance Starfield ── */}
+        <Starfield />
 
         {/* ── Nebula glows ── */}
         <div
@@ -416,9 +377,10 @@ export default function Arkshism() {
             <div className="flex justify-center mb-8">
               <div className="logo-ring">
                 <div className="logo-glow" />
-                <img
-                  src="https://www.arkshgroup.com/arksh-round.png"
+                <Image
+                  src={arkshLogo}
                   alt="Arksh Logo"
+                  fill
                   className="h-14 w-14 object-contain relative z-10"
                   style={{ filter: 'drop-shadow(0 0 14px rgba(33,154,234,0.5))' }}
                 />
