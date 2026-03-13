@@ -72,7 +72,7 @@ export default function ArkshHelps() {
       />
 
       {/* ── Get More Insights ── */}
-      <section className="py-20 px-4 max-w-7xl mx-auto">
+      <section className="py-15 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-14">
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
             Knowledge Hub
@@ -110,7 +110,7 @@ export default function ArkshHelps() {
               <Link key={post.id} href={`/blog/${post.slug}`} className="group flex flex-col">
                 <div className="bg-white rounded-2xl overflow-hidden border border-blue-50 shadow-[0_4px_20px_rgba(52,152,219,0.07)] hover:shadow-[0_16px_48px_rgba(52,152,219,0.16)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col h-full">
                   {/* Image */}
-                  <div className="relative h-52 w-full overflow-hidden">
+                  <div className="relative h-62 w-full overflow-hidden">
                     <Image
                       src={`${PAYLOAD_BASE_URL}${post.image?.url}`}
                       alt={post.title}
@@ -201,7 +201,7 @@ export default function ArkshHelps() {
                       <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                       {/* Play button */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300">
+                        <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 flex items-center justify-center shadow-2xl group-hover:scale-110 group-hover:bg-[#2561B5] transition-all duration-300">
                           <div className="w-0 h-0 border-t-10 border-t-transparent border-l-18 border-l-white border-b-10 border-b-transparent ml-1" />
                         </div>
                       </div>

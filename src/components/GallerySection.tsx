@@ -58,11 +58,9 @@ export default function GallerySection() {
         setLoading(false)
       }
     }
-
     fetchGallery()
   }, [])
 
-  // One entry per category: first gallery item's first image
   const categoriesWithFirstImage = useMemo(() => {
     const bySlug = new Map<string, { name: string; slug: string; item: GalleryItem }>()
     for (const item of items) {
@@ -79,14 +77,14 @@ export default function GallerySection() {
 
   if (loading) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-white">
+      <main className="min-h-screen flex items-center justify-center bg-[#f0f6ff]">
         <Spinner color="#3498db" />
       </main>
     )
   }
 
   return (
-    <main className="bg-white min-h-screen">
+    <main className="bg-[#f0f6ff] min-h-screen pb-24">
       <PageBanner
         title="Gallery"
         padding="py-8 sm:py-10 md:py-12 px-4 sm:px-6"
@@ -98,57 +96,123 @@ export default function GallerySection() {
         ]}
       />
 
-      <section className="py-10 sm:py-12 md:py-15 bg-white">
-        <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+      <section className="py-16 sm:py-20">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section header */}
+          <div className="text-center mb-14">
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#3498db] mb-3">
+              Visual Archive
+            </p>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#1a3a6e] mb-3">Photo Gallery</h2>
+            <div className="w-12 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] rounded-full mx-auto mb-4" />
+            <p className="text-gray-400 text-sm max-w-md mx-auto leading-relaxed">
+              Explore our curated collections of moments, milestones, and memories
+            </p>
+          </div>
+
           {categoriesWithFirstImage.length === 0 ? (
-            <p className="text-center text-gray-400 py-20">No gallery categories yet.</p>
+            /* Empty state */
+            <div className="text-center py-24">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white border border-blue-50 shadow-[0_4px_20px_rgba(52,152,219,0.08)] mb-4">
+                <svg
+                  className="w-7 h-7 text-[#3498db]/40"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3 9.75h18M3 5.25h18"
+                  />
+                </svg>
+              </div>
+              <p className="text-gray-400 text-sm">No gallery categories yet.</p>
+            </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-              {categoriesWithFirstImage.map(({ name, slug, item }) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+              {categoriesWithFirstImage.map(({ name, slug, item }, index) => {
                 const url = getFirstImageUrl(item)
                 if (!url) return null
 
                 return (
-                  <div
+                  <Link
                     key={slug}
-                    className="group relative h-56 sm:h-72 md:h-80 lg:h-88 overflow-hidden rounded-lg sm:rounded-2xl md:rounded-[10px] bg-gray-100 shadow-md transition-all duration-500 hover:shadow-2xl"
+                    href={`/gallery/${encodeURIComponent(slug)}`}
+                    className="group block"
                   >
-                    <Link
-                      href={`/gallery/${encodeURIComponent(slug)}`}
-                      className="block w-full h-full relative"
-                    >
-                      <div className="relative w-full h-full overflow-hidden">
-                        <Image
-                          src={`${PAYLOAD_BASE_URL}${url}`}
-                          alt={name}
-                          fill
-                          className="object-contain transition-transform duration-700 group-hover:scale-110"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
+                    <div className="relative h-60 sm:h-72 md:h-80 rounded-2xl overflow-hidden border border-blue-50 shadow-[0_4px_20px_rgba(52,152,219,0.08)] transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_20px_56px_rgba(52,152,219,0.18)] bg-gray-100">
+                      {/* Image */}
+                      <Image
+                        src={`${PAYLOAD_BASE_URL}${url}`}
+                        alt={name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      />
+
+                      {/* Persistent bottom linear */}
+                      <div className="absolute inset-0 bg-linear-to-t from-[#0f2050]/55 via-transparent to-transparent" />
+
+                      {/* Top accent bar — slides in on hover */}
+                      <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+
+                      {/* Image count badge (top-left) */}
+                      <div className="absolute top-4 left-4 bg-black/25 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+                        <svg
+                          className="w-3 h-3 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 3h16.5M3.75 21h16.5"
+                          />
+                        </svg>
+                        <span className="text-white text-[10px] font-semibold">
+                          {item.images?.length ?? 0} photos
+                        </span>
                       </div>
 
-                      <div
-                        className="absolute inset-0 bg-linear-to-t from-[#1D8AD2]/65 via-[#1f2a37]/40 to-transparent 
-                opacity-100 sm:opacity-0 group-hover:opacity-100 
-                transition-all duration-500 ease-out 
-                flex flex-col justify-end 
-                p-4 sm:p-6 md:p-8 lg:p-10"
-                      >
-                        <div
-                          className=" bg-[#1D8AD2]/55 rounded-lg px-3 py-2 sm:px-4 sm:py-2.5 
-                  transform translate-y-4 sm:translate-y-6 group-hover:translate-y-0 
-                  transition-transform duration-500 ease-out w-fit"
-                        >
-                          <p
-                            className="text-white text-xs sm:text-sm font-semibold uppercase 
-                  tracking-[0.18em] sm:tracking-[0.22em]"
-                          >
-                            {name}
+                      {/* Ghost index number */}
+                      <div className="absolute top-3 right-4 text-white/10 font-black text-5xl leading-none select-none pointer-events-none group-hover:text-white/18 transition-colors duration-300">
+                        {String(index + 1).padStart(2, '0')}
+                      </div>
+
+                      {/* Bottom label + arrow */}
+                      <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 flex items-end justify-between">
+                        <div className="transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+                          <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-white/55 mb-1">
+                            Collection
                           </p>
+                          <h3 className="text-white font-bold text-base sm:text-lg leading-tight">
+                            {name}
+                          </h3>
+                        </div>
+
+                        {/* Arrow button */}
+                        <div className="w-9 h-9 rounded-full bg-white/15 backdrop-blur-sm border border-white/25 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-x-2 group-hover:translate-x-0 transition-all duration-300 shrink-0 ml-3">
+                          <svg
+                            className="w-4 h-4 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
+                            />
+                          </svg>
                         </div>
                       </div>
-                    </Link>
-                  </div>
+                    </div>
+                  </Link>
                 )
               })}
             </div>

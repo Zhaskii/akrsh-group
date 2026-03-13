@@ -378,7 +378,7 @@ export default function AboutCEO() {
                       <div className="absolute top-0 left-0 right-0 h-0.75 bg-linear-to-r from-[#2357A6] to-[#3498db] -translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                       {/* Play button */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-13 h-13 bg-white/20 backdrop-blur-sm border border-white/40 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-white/30 transition-all duration-300 shadow-lg">
+                        <div className="w-13 h-13 bg-white/20 backdrop-blur-sm border border-white/40 rounded-full flex items-center justify-center group-hover:scale-110 group-hover:bg-[#2561B5] transition-all duration-300 shadow-lg">
                           <div className="w-0 h-0 border-t-[9px] border-t-transparent border-l-16 border-l-white border-b-[9px] border-b-transparent ml-1" />
                         </div>
                       </div>

@@ -199,7 +199,7 @@ export default function NewsRoom() {
                         <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
                         {/* Play button */}
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white shadow-xl ring-2 ring-white/40 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#1D8AD2] group-hover:ring-white/60">
+                          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white shadow-xl ring-2 ring-white/40 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#2561B5] group-hover:ring-white/60">
                             <PlayIcon className="h-7 w-7 ml-0.5" />
                           </span>
                         </div>
@@ -212,13 +212,13 @@ export default function NewsRoom() {
 
             <button
               id="chairman-prev"
-              className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
+              className="absolute -left-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
             >
               <ChevronLeftIcon className="w-5 h-5" />
             </button>
             <button
               id="chairman-next"
-              className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
+              className="absolute -right-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
             >
               <ChevronRightIcon className="w-5 h-5" />
             </button>
@@ -272,7 +272,7 @@ export default function NewsRoom() {
                         )}
                         <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
                         <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white shadow-xl ring-2 ring-white/40 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#1D8AD2] group-hover:ring-white/60">
+                          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm text-white shadow-xl ring-2 ring-white/40 transition-all duration-300 group-hover:scale-110 group-hover:bg-[#2561B5] group-hover:ring-white/60">
                             <PlayIcon className="h-5 w-5 ml-0.5" />
                           </span>
                         </div>
@@ -285,13 +285,13 @@ export default function NewsRoom() {
 
             <button
               id="ceo-prev"
-              className="absolute -left-2 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
+              className="absolute -left-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
             >
               <ChevronLeftIcon className="w-5 h-5" />
             </button>
             <button
               id="ceo-next"
-              className="absolute -right-2 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
+              className="absolute -right-4 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 border border-blue-100"
             >
               <ChevronRightIcon className="w-5 h-5" />
             </button>

@@ -87,7 +87,7 @@ export default function ContactSection() {
         ]}
       />
 
-      <div className="w-full bg-[#f0f6ff] py-16 sm:py-20 md:py-24 lg:py-32">
+      <div className="w-full bg-[#f0f6ff] py-16 sm:py-20 md:py-24 lg:py-22">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           {/* Header */}
           <div className="text-center mb-14 sm:mb-18 md:mb-20">

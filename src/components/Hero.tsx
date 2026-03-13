@@ -4,7 +4,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRef, useEffect, useState } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
-
 import hero1 from '@/assets/heroBg/Arksh-Group-Annual-Awards.png'
 import hero2 from '@/assets/heroBg/Arksh-Agro-BG.jpg'
 import hero3 from '@/assets/heroBg/Arksh-Food-BG.jpg'
@@ -345,7 +344,7 @@ export default function Hero() {
 
       <div className="hero-root">
         {/* ── Cinematic Slideshow ── */}
-        <div className="relative w-full h-[25vh] sm:h-[62vh] md:h-[74vh] lg:h-[84vh] xl:h-[84vh] overflow-hidden bg-[#050c1e]">
+        <div className="relative w-full h-[25vh] sm:h-[62vh] md:h-[74vh] lg:h-[85vh] xl:h-[85vh] overflow-hidden bg-[#050c1e]">
           {/* Slides */}
           {HERO_IMAGES.map((imageAsset, index) => (
             <div

@@ -132,7 +132,7 @@ export default function BlogSection() {
                   >
                     <Link href={`/blog/${post.slug}`}>
                       {/* Image */}
-                      <div className="relative h-48 sm:h-56 md:h-64 lg:h-72 overflow-hidden">
+                      <div className="relative h-56 sm:h-56 md:h-64 lg:h-62 overflow-hidden">
                         <Image
                           src={`${PAYLOAD_BASE_URL}${post.image.url}`}
                           alt={post.title}

@@ -20,6 +20,7 @@ import { HomeIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 import toast, { Toaster } from 'react-hot-toast'
 import type { Career as CareerType } from '@/payload-types'
+import carrerBG from '@/assets/heroBG/carrerBG.avif'
 
 const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
 
@@ -156,8 +157,7 @@ export default function CareerSection() {
       <div
         className="relative h-72 flex items-center justify-center text-white bg-cover bg-center overflow-hidden"
         style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=2070')",
+          backgroundImage: `url(${carrerBG.src})`,
         }}
       >
         <div className="absolute inset-0 bg-linear-to-br from-[#1a3a6e]/90 via-[#2357A6]/80 to-[#3498db]/70" />
