@@ -23,7 +23,7 @@ export default function OurBrands() {
       try {
         const response = await fetch('/api/brands?sort=order&limit=100')
         const data = await response.json()
-        setBrands(data.docs)
+        setBrands(data.docs || [])
       } catch (error) {
         console.error('Error fetching brands:', error)
       } finally {
@@ -35,10 +35,15 @@ export default function OurBrands() {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 640) setItemsToShow(1)
-      else if (window.innerWidth < 768) setItemsToShow(2)
-      else if (window.innerWidth < 1024) setItemsToShow(3)
-      else setItemsToShow(5)
+      const w = window.innerWidth
+      // Optimized breakpoints to remove excessive white space on small/medium screens
+      if (w < 480)
+        setItemsToShow(2) // Mobile: 2 items avoids huge stretched cards
+      else if (w < 768)
+        setItemsToShow(3) // Tablet
+      else if (w < 1024)
+        setItemsToShow(4) // Small Desktop
+      else setItemsToShow(5) // Large Desktop
     }
     handleResize()
     window.addEventListener('resize', handleResize)
@@ -55,31 +60,14 @@ export default function OurBrands() {
 
   if (loading) {
     return (
-      <>
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
-          @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
-          .ob-shimmer {
-            background: linear-gradient(90deg,#f0f4f8 25%,#e8f0f8 50%,#f0f4f8 75%);
-            background-size: 800px 100%;
-            animation: shimmer 1.6s infinite linear;
-            border-radius: 16px;
-          }
-        `}</style>
-        <div
-          className="py-20 flex flex-col items-center gap-5 px-6"
-          style={{ background: 'linear-gradient(160deg,#f8fbff,#f0f6fe,#eaf3fd)' }}
-        >
-          <div className="ob-shimmer h-8 w-44 mb-1" />
-          <div className="ob-shimmer h-1 w-14" />
-          <div className="ob-shimmer h-4 w-52 mb-6" />
-          <div className="flex gap-5 w-full max-w-5xl">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="ob-shimmer flex-1 h-32" />
-            ))}
-          </div>
+      <div className="py-20 bg-slate-50 flex flex-col items-center gap-6 px-6">
+        <div className="h-8 w-48 bg-slate-200 animate-pulse rounded-lg" />
+        <div className="flex gap-5 w-full max-w-7xl overflow-hidden">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex-1 h-36 bg-slate-200 animate-pulse rounded-2xl" />
+          ))}
         </div>
-      </>
+      </div>
     )
   }
 
@@ -94,32 +82,14 @@ export default function OurBrands() {
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
 
         .ob-root { font-family: 'DM Sans', sans-serif; }
+        .ob-display { font-family: 'Cormorant Garamond', serif; }
 
         .ob-section {
           background: linear-gradient(160deg, #f8fbff 0%, #f0f6fe 50%, #eaf3fd 100%);
           position: relative;
           overflow: hidden;
         }
-        .ob-section::before {
-          content: '';
-          position: absolute;
-          top: -100px; right: -100px;
-          width: 420px; height: 420px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(33,154,234,0.07), transparent 70%);
-          pointer-events: none;
-        }
-        .ob-section::after {
-          content: '';
-          position: absolute;
-          bottom: -80px; left: -80px;
-          width: 360px; height: 360px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(35,87,166,0.05), transparent 70%);
-          pointer-events: none;
-        }
 
-        /* Eyebrow */
         .ob-eyebrow {
           font-size: 0.68rem;
           font-weight: 600;
@@ -138,147 +108,86 @@ export default function OurBrands() {
           opacity: 0.5;
         }
 
-        /* Ornament */
-        .ob-ornament {
-          display: flex; align-items: center; gap: 12px; justify-content: center;
-          margin: 10px 0 16px;
-        }
-        .ob-orn-line {
-          width: 40px; height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(33,154,234,0.45));
-        }
-        .ob-orn-line.r {
-          background: linear-gradient(90deg, rgba(33,154,234,0.45), transparent);
-        }
-        .ob-orn-diamond {
-          width: 5px; height: 5px;
-          background: #219AEA;
-          transform: rotate(45deg);
-          border-radius: 1px;
-          opacity: 0.6;
+        /* Clean card: Removed the glitchy blue top border bar */
+        .ob-card-wrap {
+          position: relative;
+          border-radius: 18px;
+          transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+                      box-shadow 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+          background: #ffffff;
+          border: 1px solid rgba(33,154,234,0.1);
+          overflow: hidden;
         }
 
-        /* Brand card */
-        .ob-brand-card {
+        .ob-card-wrap:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 16px 32px rgba(33,154,234,0.12);
+          border-color: rgba(33,154,234,0.3);
+        }
+
+        .ob-logo-container {
           position: relative;
-          background: #ffffff;
-          border-radius: 18px;
-          border: 1px solid rgba(33,154,234,0.1);
-          box-shadow: 0 2px 16px rgba(35,87,166,0.06), 0 1px 3px rgba(0,0,0,0.04);
           display: flex;
           align-items: center;
           justify-content: center;
-          overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-        }
-        .ob-brand-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, #219AEA, #2357A6);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-          border-radius: 18px 18px 0 0;
-        }
-        .ob-brand-card:hover {
-          transform: translateY(-6px) scale(1.03);
-          box-shadow: 0 16px 44px rgba(33,154,234,0.16), 0 4px 12px rgba(0,0,0,0.07);
-          border-color: rgba(33,154,234,0.25);
-        }
-        .ob-brand-card:hover::before { transform: scaleX(1); }
-
-        /* Fade edges */
-        .ob-fade-left {
-          position: absolute; top: 0; left: 0; bottom: 0; width: 80px;
-          background: linear-gradient(90deg, rgba(240,246,254,0.9), transparent);
-          z-index: 10; pointer-events: none;
-        }
-        .ob-fade-right {
-          position: absolute; top: 0; right: 0; bottom: 0; width: 80px;
-          background: linear-gradient(270deg, rgba(240,246,254,0.9), transparent);
-          z-index: 10; pointer-events: none;
+          width: 100%;
+          background: white;
         }
 
-        /* Dot */
+        .ob-fade-left, .ob-fade-right {
+          position: absolute; top: 0; bottom: 0; width: 60px; z-index: 10; pointer-events: none;
+        }
+        .ob-fade-left { left: 0; background: linear-gradient(90deg, #f8fbff, transparent); }
+        .ob-fade-right { right: 0; background: linear-gradient(270deg, #f8fbff, transparent); }
+
         .ob-dot {
           height: 6px;
           border-radius: 100px;
-          transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+          transition: all 0.4s ease;
           cursor: pointer;
           border: none;
         }
         .ob-dot.active {
           width: 24px;
-          background: linear-gradient(90deg, #219AEA, #2357A6);
-          box-shadow: 0 2px 8px rgba(33,154,234,0.3);
+          background: #219AEA;
         }
         .ob-dot.inactive {
           width: 6px;
           background: rgba(33,154,234,0.2);
         }
-        .ob-dot.inactive:hover { background: rgba(33,154,234,0.4); }
 
-        /* Counter */
-        .ob-counter {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 0.85rem;
-          color: rgba(35,87,166,0.45);
-          letter-spacing: 0.12em;
+        .ob-name {
+          margin-top: 12px;
+          text-align: center;
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: #1e293b;
+          opacity: 0.7;
+          transition: opacity 0.3s ease;
+        }
+        .ob-slide:hover .ob-name {
+          opacity: 1;
         }
       `}</style>
 
-      <section className="ob-root ob-section py-20 sm:py-24">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 text-center relative z-10">
-          {/* ── Header ── */}
-          <div className="mb-14">
+      <section className="ob-root ob-section py-16 sm:py-24">
+        <div className="max-w-8xl mx-auto px-4 sm:px-8 text-center relative z-10">
+          <div className="mb-10 sm:mb-14">
             <div className="ob-eyebrow">Arksh Group</div>
-
             <h2
-              style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontSize: 'clamp(2.2rem, 4.5vw, 3.6rem)',
-                fontWeight: 700,
-                lineHeight: 1.1,
-                color: '#0f1e3c',
-              }}
+              className="ob-display font-bold text-[#0f1e3c] leading-tight mb-4"
+              style={{ fontSize: 'clamp(1.8rem, 5vw, 3.2rem)' }}
             >
-              Our{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #219AEA, #2357A6)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Brands
-              </span>
+              Our <span className="text-[#219AEA]">Brands</span>
             </h2>
-
-            <div className="ob-ornament">
-              <div className="ob-orn-line" />
-              <div className="ob-orn-diamond" />
-              <div className="ob-orn-line r" />
-            </div>
-
-            <p
-              style={{
-                fontSize: '0.82rem',
-                letterSpacing: '0.1em',
-                textTransform: 'uppercase',
-                color: '#2357A6',
-                fontWeight: 500,
-              }}
-            >
-              Discover our latest brands &amp; products
+            <p className="text-slate-500 text-xs sm:text-sm tracking-widest uppercase">
+              Discover our latest brands & products
             </p>
           </div>
 
-          {/* ── Carousel ── */}
           <div className="relative overflow-hidden">
-            <div className="ob-fade-left" />
-            <div className="ob-fade-right" />
+            <div className="ob-fade-left hidden sm:block" />
+            <div className="ob-fade-right hidden sm:block" />
 
             <div
               className="flex transition-transform duration-700 ease-in-out"
@@ -287,48 +196,43 @@ export default function OurBrands() {
               {extendedBrands.map((brand, index) => (
                 <div
                   key={`${brand.id}-${index}`}
+                  className="ob-slide shrink-0 px-2 sm:px-4"
                   style={{ width: `${translatePercentage}%` }}
-                  className="shrink-0 px-3 sm:px-4"
                 >
-                  <div className="ob-brand-card" style={{ height: 'clamp(120px, 14vw, 160px)' }}>
-                    <Image
-                      src={brand.logo.url}
-                      alt={brand.name}
-                      fill
-                      className="object-contain p-5 sm:p-6 md:p-7 transition-transform duration-500 hover:scale-105"
-                    />
+                  <div className="ob-card-wrap">
+                    <div
+                      className="ob-logo-container"
+                      /* Increased height for mobile/tablet */
+                      style={{ height: 'clamp(130px, 16vw, 160px)' }}
+                    >
+                      <div className="relative w-full h-full p-3 sm:p-5 md:p-6">
+                        <Image
+                          src={brand.logo.url}
+                          alt={brand.name}
+                          fill
+                          className="object-contain transition-transform duration-500 hover:scale-105"
+                        />
+                      </div>
+                    </div>
                   </div>
-
-                  <p
-                    style={{
-                      marginTop: 10,
-                      fontSize: '0.72rem',
-                      letterSpacing: '0.06em',
-                      color: 'rgba(35,87,166,0.5)',
-                      fontWeight: 500,
-                      textAlign: 'center',
-                    }}
-                  >
-                    {brand.name}
-                  </p>
+                  <p className="ob-name truncate px-2">{brand.name}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* ── Dots + Counter ── */}
           <div className="flex flex-col items-center gap-3 mt-10">
-            <div className="flex items-center gap-2 flex-wrap justify-center">
+            <div className="flex items-center gap-2">
               {brands.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
                   className={`ob-dot ${currentIndex === idx ? 'active' : 'inactive'}`}
-                  aria-label={`Go to brand ${idx + 1}`}
+                  aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
             </div>
-            <span className="ob-counter">
+            <span className="text-[10px] sm:text-xs font-medium text-slate-400 tracking-tighter">
               {String(currentIndex + 1).padStart(2, '0')} / {String(brands.length).padStart(2, '0')}
             </span>
           </div>

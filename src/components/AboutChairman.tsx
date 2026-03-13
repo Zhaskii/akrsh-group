@@ -14,13 +14,26 @@ import { CheckCircleIcon, HomeIcon } from '@heroicons/react/24/solid'
 import { allAwards, positions } from '@/constant/chairman.profile.data'
 import chairman from '@/assets/chairman&ceo/Rajesh-Kazi-Shrestha-Arksh-Group.jpg'
 
+// Lightbox imports
+import Lightbox from 'yet-another-react-lightbox'
+import 'yet-another-react-lightbox/styles.css'
+
+// Lightbox Plugins
+import Download from 'yet-another-react-lightbox/plugins/download'
+import Fullscreen from 'yet-another-react-lightbox/plugins/fullscreen'
+import Slideshow from 'yet-another-react-lightbox/plugins/slideshow'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import Zoom from 'yet-another-react-lightbox/plugins/zoom'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
+
 const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
 
-// Helper to get Youtube Thumbnail from URL (Consistent with NewsRoom)
+// Helper to get Youtube Thumbnail from URL
 function getYouTubeId(url: string): string | null {
-  const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
+  if (!url) return null
+  const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
   const match = url.match(regExp)
-  return match ? match[1] : null
+  return match && match[2].length === 11 ? match[2] : null
 }
 
 export default function AboutChairman() {
@@ -36,6 +49,7 @@ export default function AboutChairman() {
   const [isPausedVideo, setIsPausedVideo] = useState(false)
   const [isPausedGallery, setIsPausedGallery] = useState(false)
   const [itemsToShow, setItemsToShow] = useState({ videos: 3, gallery: 4 })
+  const [lightboxIndex, setLightboxIndex] = useState(-1)
 
   const getImageUrl = (urlPath: string | undefined) => {
     if (!urlPath) return ''
@@ -46,7 +60,6 @@ export default function AboutChairman() {
     const fetchChairmanData = async () => {
       try {
         setLoading(true)
-        // Updated to use youtube-news with chairman filter
         const [videoRes, photoRes] = await Promise.all([
           fetch(
             `${PAYLOAD_BASE_URL}/api/youtube-news?where[cornerType][equals]=chairman&sort=order&limit=100`,
@@ -115,6 +128,12 @@ export default function AboutChairman() {
     return () => clearInterval(interval)
   }, [isPausedGallery, nextGallery, galleryImages.length, itemsToShow.gallery])
 
+  const lightboxSlides = galleryImages.map((item) => ({
+    src: getImageUrl(item.image?.url),
+    alt: item.caption || 'Gallery Image',
+    download: `${getImageUrl(item.image?.url)}?download`,
+  }))
+
   return (
     <main className="bg-[#f0f6ff] min-h-screen pb-24 font-sans overflow-x-hidden">
       <PageBanner
@@ -136,6 +155,7 @@ export default function AboutChairman() {
                 alt="Dr. Rajesh Kazi Shrestha"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
+                sizes="(max-width: 1024px) 100vw, 40vw"
                 priority
               />
               <div className="absolute inset-0 bg-linear-to-t from-[#0f2050]/65 to-transparent" />
@@ -218,11 +238,14 @@ export default function AboutChairman() {
         <div className="relative border-l-2 border-blue-100 ml-4 md:ml-32 space-y-8 pb-10">
           {visibleAwards.map((award, idx) => (
             <div key={idx} className="relative pl-10 group cursor-pointer">
-              <div className="absolute -left-1.75 top-5 w-3.5 h-3.5 rounded-full bg-white border-2 border-[#3498db] z-10 transition-all group-hover:bg-[#3498db] group-hover:scale-150" />
-              <span className="absolute -left-28 top-4 text-[#2357A6] font-bold text-base hidden md:block opacity-30 group-hover:opacity-100 transition-all">
+              <div className="absolute -left-1.75 top-5 w-3.5 h-3.5 rounded-full bg-white border-2 border-[#3498db] z-10 transition-all duration-300 group-hover:bg-[#3498db] group-hover:scale-150" />
+              <span className="absolute -left-28 top-4 text-[#2357A6] font-bold text-base hidden md:block opacity-30 transition-all duration-300 group-hover:opacity-100">
                 {award.year}
               </span>
-              <div className="bg-white p-6 rounded-2xl border border-blue-50 shadow-sm transition-all group-hover:-translate-y-1.5 group-hover:shadow-xl">
+              <div className="bg-white p-6 rounded-2xl border border-blue-50 shadow-sm transition-all duration-300 group-hover:-translate-y-1.5 group-hover:shadow-xl relative">
+                <div className="absolute top-5 right-5 opacity-10 group-hover:opacity-100 transition-opacity duration-300">
+                  <TrophyIcon className="w-5 h-5 text-[#3498db]" />
+                </div>
                 <h4 className="text-[#1a3a6e] text-base font-bold pr-10">{award.title}</h4>
                 <p className="text-gray-400 text-[13px] mt-2.5">{award.desc}</p>
               </div>
@@ -232,7 +255,7 @@ export default function AboutChairman() {
         <div className="text-center mt-10">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="inline-flex items-center gap-2 border border-blue-200 text-[#2357A6] px-8 py-3 rounded-full hover:bg-[#2357A6] hover:text-white transition-all text-xs uppercase tracking-widest font-semibold"
+            className="inline-flex items-center gap-2 border border-blue-200 text-[#2357A6] px-8 py-3 rounded-full hover:bg-[#2357A6] hover:text-white transition-all duration-300 font-semibold text-xs uppercase tracking-widest"
           >
             {isExpanded ? (
               <>
@@ -265,12 +288,12 @@ export default function AboutChairman() {
             {positions.map((pos, idx) => (
               <div
                 key={idx}
-                className="group flex items-center bg-[#f0f6ff] rounded-2xl overflow-hidden border border-blue-50 transition-all hover:-translate-y-0.5 shadow-sm"
+                className="group flex items-center bg-[#f0f6ff] rounded-2xl overflow-hidden border border-blue-50 transition-all duration-300 hover:-translate-y-0.5"
               >
-                <div className="w-[40%] md:w-[35%] px-5 py-4 font-bold text-[#1a3a6e] text-sm group-hover:text-[#3498db] transition-colors">
+                <div className="w-[40%] md:w-[35%] px-5 py-4 font-bold text-[#1a3a6e] text-sm group-hover:text-[#3498db] transition-colors leading-snug">
                   {pos.title}
                 </div>
-                <div className="flex-1 px-5 py-4 text-right text-gray-500 text-sm font-medium">
+                <div className="flex-1 px-5 py-4 text-right text-gray-500 text-sm font-medium leading-snug">
                   {pos.organization}
                 </div>
               </div>
@@ -278,7 +301,7 @@ export default function AboutChairman() {
           </div>
         </div>
 
-        {/* ── VIDEO MESSAGES (Chairman Corner) ── */}
+        {/* ── VIDEO MESSAGES ── */}
         {!loading && videoData.length > 0 && (
           <div
             className="py-20 max-w-7xl mx-auto px-6 mt-4"
@@ -297,13 +320,13 @@ export default function AboutChairman() {
                 <>
                   <button
                     onClick={prevVideo}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md hover:bg-[#2357A6] hover:text-white transition-all flex items-center justify-center text-[#2357A6]"
                   >
                     <ChevronLeftIcon className="w-5 h-5" />
                   </button>
                   <button
                     onClick={nextVideo}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md hover:bg-[#2357A6] hover:text-white transition-all flex items-center justify-center text-[#2357A6]"
                   >
                     <ChevronRightIcon className="w-5 h-5" />
                   </button>
@@ -319,9 +342,13 @@ export default function AboutChairman() {
                 >
                   {videoData.map((video, i) => {
                     const videoId = getYouTubeId(video.youtubeUrl)
-                    const thumbnailUrl = videoId
+                    const fallbackThumb = videoId
                       ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-                      : null
+                      : ''
+                    const thumbUrl = video.thumbnail?.url
+                      ? getImageUrl(video.thumbnail.url)
+                      : fallbackThumb
+
                     return (
                       <div
                         key={`video-${i}`}
@@ -331,18 +358,20 @@ export default function AboutChairman() {
                           href={video.youtubeUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="group relative aspect-video rounded-2xl overflow-hidden shadow-md block bg-black transition-all hover:shadow-xl hover:-translate-y-1.5"
+                          className="group relative aspect-video rounded-2xl overflow-hidden shadow-md border border-blue-50 block bg-black transition-all duration-300 hover:-translate-y-1.5"
                         >
-                          {thumbnailUrl && (
+                          {thumbUrl && (
                             <Image
-                              src={thumbnailUrl}
-                              alt="Chairman Video"
+                              src={thumbUrl}
+                              alt="Video Message"
                               fill
-                              className="object-cover opacity-90 group-hover:scale-105 transition-all"
+                              className="object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-500"
+                              unoptimized={thumbUrl.includes('youtube.com')}
                             />
                           )}
+                          <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent" />
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center group-hover:scale-110 transition-all">
+                            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm border border-white/40 rounded-full flex items-center justify-center group-hover:scale-110 transition-all duration-300">
                               <div className="w-0 h-0 border-t-[9px] border-t-transparent border-l-16 border-l-white border-b-[9px] border-b-transparent ml-1" />
                             </div>
                           </div>
@@ -375,13 +404,13 @@ export default function AboutChairman() {
                 <>
                   <button
                     onClick={prevGallery}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md hover:bg-[#2357A6] hover:text-white transition-all flex items-center justify-center text-[#2357A6]"
                   >
                     <ChevronLeftIcon className="w-5 h-5" />
                   </button>
                   <button
                     onClick={nextGallery}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md flex items-center justify-center text-[#2357A6]"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white border border-blue-100 rounded-full shadow-md hover:bg-[#2357A6] hover:text-white transition-all flex items-center justify-center text-[#2357A6]"
                   >
                     <ChevronRightIcon className="w-5 h-5" />
                   </button>
@@ -395,29 +424,46 @@ export default function AboutChairman() {
                     width: '100%',
                   }}
                 >
-                  {galleryImages.map((item, i) => (
-                    <div
-                      key={`gallery-${i}`}
-                      className="min-w-full sm:min-w-[50%] md:min-w-[33.333%] lg:min-w-[25%] px-2 shrink-0"
-                    >
-                      <div className="relative aspect-square rounded-2xl overflow-hidden border border-blue-50 shadow-sm group cursor-pointer transition-all hover:-translate-y-1.5 hover:shadow-xl">
-                        {getImageUrl(item.image?.url) && (
-                          <Image
-                            src={getImageUrl(item.image.url)}
-                            alt={item.caption || 'Gallery Image'}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                        )}
+                  {galleryImages.map((item, i) => {
+                    const imgUrl = getImageUrl(item.image?.url)
+                    return (
+                      <div
+                        key={`gallery-${i}`}
+                        className="min-w-full sm:min-w-[50%] md:min-w-[33.333%] lg:min-w-[25%] px-2 shrink-0"
+                      >
+                        <div
+                          onClick={() => setLightboxIndex(i)}
+                          className="relative aspect-square rounded-2xl overflow-hidden border border-blue-50 shadow-sm group cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl"
+                        >
+                          {imgUrl && (
+                            <Image
+                              src={imgUrl}
+                              alt={item.caption || 'Gallery Image'}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          )}
+                          <div className="absolute inset-0 bg-linear-to-t from-[#1a3a6e]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             </div>
           </div>
         )}
       </section>
+
+      <Lightbox
+        open={lightboxIndex >= 0}
+        index={lightboxIndex}
+        close={() => setLightboxIndex(-1)}
+        slides={lightboxSlides}
+        plugins={[Download, Fullscreen, Slideshow, Thumbnails, Zoom]}
+        zoom={{ maxZoomPixelRatio: 3 }}
+        slideshow={{ autoplay: false, delay: 3000 }}
+      />
     </main>
   )
 }

@@ -291,7 +291,7 @@ export default function ContactSection() {
         {/* Top fade */}
         <div className="absolute top-0 left-0 right-0 h-6 bg-linear-to-b from-[#f0f6ff] to-transparent z-10" />
         <iframe
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3532.057797746535!2d85.3195244150622!3d27.715454982787!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb190000000000%3A0x0!2zMjfCsDQyJzU1LjYiTiA4NcKwMTknMTguMiJF!5e0!3m2!1sen!2snp!4v1625654321000!5m2!1sen!2snp"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.7063399626504!2d85.31907747568266!3d27.7263518246527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1918569c8961%3A0x5f43dd27a908ad94!2sArksh%20Group!5e0!3m2!1sen!2snp!4v1773384215008!5m2!1sen!2snp"
           width="100%"
           height="100%"
           style={{ border: 0 }}

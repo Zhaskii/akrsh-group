@@ -132,9 +132,9 @@ export default function About() {
       >
         <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* ── Image Column ── */}
+            {/* ── Image Column (First on Mobile, Left on Desktop) ── */}
             <motion.div
-              className="order-2 md:order-1 flex justify-center"
+              className="order-1 md:order-1 flex justify-center"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.25 }}
@@ -159,7 +159,6 @@ export default function About() {
                     boxShadow: '0 24px 64px rgba(35,87,166,0.22), 0 4px 16px rgba(33,154,234,0.1)',
                   }}
                 >
-                  {/* ✅ Zoom on hover — overflow-hidden on parent clips the scale */}
                   <Image
                     src={chairman}
                     alt="Chairman Rajesh Kazi Shrestha"
@@ -225,8 +224,8 @@ export default function About() {
               </div>
             </motion.div>
 
-            {/* ── Content Column ── */}
-            <div className="order-1 md:order-2">
+            {/* ── Content Column (Second on Mobile, Right on Desktop) ── */}
+            <div className="order-2 md:order-2">
               {/* Badge */}
               <motion.div
                 initial="hidden"
@@ -333,18 +332,6 @@ export default function About() {
                       background: 'white',
                       border: '1px solid rgba(33,154,234,0.12)',
                       boxShadow: '0 4px 16px rgba(33,154,234,0.06)',
-                    }}
-                    onMouseEnter={(e) => {
-                      ;(e.currentTarget as HTMLDivElement).style.boxShadow =
-                        '0 10px 30px rgba(33,154,234,0.14)'
-                      ;(e.currentTarget as HTMLDivElement).style.borderColor =
-                        'rgba(33,154,234,0.28)'
-                    }}
-                    onMouseLeave={(e) => {
-                      ;(e.currentTarget as HTMLDivElement).style.boxShadow =
-                        '0 4px 16px rgba(33,154,234,0.06)'
-                      ;(e.currentTarget as HTMLDivElement).style.borderColor =
-                        'rgba(33,154,234,0.12)'
                     }}
                   >
                     <p

@@ -23,7 +23,7 @@ export default function OurCompanies() {
       try {
         const response = await fetch('/api/companies?sort=order&limit=100')
         const data = await response.json()
-        setCompanies(data.docs)
+        setCompanies(data.docs || [])
       } catch (error) {
         console.error('Error fetching companies:', error)
       } finally {
@@ -34,16 +34,20 @@ export default function OurCompanies() {
   }, [])
 
   useEffect(() => {
-    const updateItemsToShow = () => {
-      const width = window.innerWidth
-      if (width < 640) setItemsToShow(1)
-      else if (width < 768) setItemsToShow(2)
-      else if (width < 1024) setItemsToShow(3)
-      else setItemsToShow(5)
+    const update = () => {
+      const w = window.innerWidth
+      // Adjusted itemsToShow to ensure cards have a professional aspect ratio
+      if (w < 480)
+        setItemsToShow(2) // Mobile: 2 items looks better than 1 huge one
+      else if (w < 768)
+        setItemsToShow(3) // Tablet
+      else if (w < 1024)
+        setItemsToShow(4) // Small Desktop
+      else setItemsToShow(5) // Large Desktop
     }
-    updateItemsToShow()
-    window.addEventListener('resize', updateItemsToShow)
-    return () => window.removeEventListener('resize', updateItemsToShow)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
   }, [])
 
   useEffect(() => {
@@ -56,28 +60,14 @@ export default function OurCompanies() {
 
   if (loading) {
     return (
-      <>
-        <style>{`
-          @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap');
-          @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
-          .oc-shimmer {
-            background: linear-gradient(90deg,#f0f4f8 25%,#e4edf5 50%,#f0f4f8 75%);
-            background-size: 800px 100%;
-            animation: shimmer 1.6s infinite linear;
-            border-radius: 16px;
-          }
-        `}</style>
-        <div className="py-20 bg-linear-to-br from-slate-50 via-blue-50/30 to-slate-50 flex flex-col items-center gap-6 px-6">
-          <div className="oc-shimmer h-8 w-48 mb-2" />
-          <div className="oc-shimmer h-1 w-16" />
-          <div className="oc-shimmer h-4 w-56 mb-6" />
-          <div className="flex gap-5 w-full max-w-5xl">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="oc-shimmer flex-1 h-36" />
-            ))}
-          </div>
+      <div className="py-20 bg-slate-50 flex flex-col items-center gap-6 px-6">
+        <div className="h-8 w-48 bg-slate-200 animate-pulse rounded-lg" />
+        <div className="flex gap-5 w-full max-w-7xl overflow-hidden">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex-1 h-36 bg-slate-200 animate-pulse rounded-2xl" />
+          ))}
         </div>
-      </>
+      </div>
     )
   }
 
@@ -99,26 +89,7 @@ export default function OurCompanies() {
           position: relative;
           overflow: hidden;
         }
-        .oc-section::before {
-          content: '';
-          position: absolute;
-          top: -100px; right: -100px;
-          width: 420px; height: 420px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(33,154,234,0.07), transparent 70%);
-          pointer-events: none;
-        }
-        .oc-section::after {
-          content: '';
-          position: absolute;
-          bottom: -80px; left: -80px;
-          width: 360px; height: 360px;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(35,87,166,0.05), transparent 70%);
-          pointer-events: none;
-        }
 
-        /* Eyebrow */
         .oc-eyebrow {
           font-size: 0.68rem;
           font-weight: 600;
@@ -137,141 +108,85 @@ export default function OurCompanies() {
           opacity: 0.5;
         }
 
-        /* Ornament */
-        .oc-ornament {
-          display: flex; align-items: center; gap: 12px; justify-content: center;
-          margin: 10px 0 16px;
-        }
-        .oc-orn-line {
-          width: 40px; height: 1px;
-          background: linear-gradient(90deg, transparent, rgba(33,154,234,0.45));
-        }
-        .oc-orn-line.r {
-          background: linear-gradient(90deg, rgba(33,154,234,0.45), transparent);
-        }
-        .oc-orn-diamond {
-          width: 5px; height: 5px;
-          background: #219AEA;
-          transform: rotate(45deg);
-          border-radius: 1px;
-          opacity: 0.6;
+        .oc-card-wrap {
+          position: relative;
+          border-radius: 18px;
+          transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+                      box-shadow 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
+          background: #ffffff;
+          border: 1px solid rgba(33,154,234,0.1);
+          overflow: hidden;
         }
 
-        /* Logo card */
-        .oc-logo-card {
+        .oc-card-wrap:hover {
+          transform: translateY(-6px);
+          box-shadow: 0 16px 32px rgba(33,154,234,0.12);
+          border-color: rgba(33,154,234,0.3);
+        }
+
+        .oc-logo-container {
           position: relative;
-          background: #ffffff;
-          border-radius: 18px;
-          border: 1px solid rgba(33,154,234,0.1);
-          box-shadow: 0 2px 16px rgba(35,87,166,0.06), 0 1px 3px rgba(0,0,0,0.04);
           display: flex;
           align-items: center;
           justify-content: center;
-          overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-        }
-        .oc-logo-card::before {
-          content: '';
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, #219AEA, #2357A6);
-          transform: scaleX(0);
-          transform-origin: left;
-          transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);
-          border-radius: 18px 18px 0 0;
-        }
-        .oc-logo-card:hover {
-          transform: translateY(-6px) scale(1.03);
-          box-shadow: 0 16px 44px rgba(33,154,234,0.16), 0 4px 12px rgba(0,0,0,0.07);
-          border-color: rgba(33,154,234,0.25);
-        }
-        .oc-logo-card:hover::before { transform: scaleX(1); }
-
-        /* Fade edges on carousel */
-        .oc-fade-left {
-          position: absolute; top: 0; left: 0; bottom: 0;
-          width: 80px;
-          background: linear-gradient(90deg, rgba(240,246,254,0.9), transparent);
-          z-index: 10;
-          pointer-events: none;
-        }
-        .oc-fade-right {
-          position: absolute; top: 0; right: 0; bottom: 0;
-          width: 80px;
-          background: linear-gradient(270deg, rgba(240,246,254,0.9), transparent);
-          z-index: 10;
-          pointer-events: none;
+          width: 100%;
+          background: white;
         }
 
-        /* Counter */
-        .oc-counter {
-          font-family: 'Cormorant Garamond', serif;
-          font-size: 0.85rem;
-          color: rgba(35,87,166,0.45);
-          letter-spacing: 0.12em;
+        .oc-fade-left, .oc-fade-right {
+          position: absolute; top: 0; bottom: 0; width: 60px; z-index: 10; pointer-events: none;
         }
+        .oc-fade-left { left: 0; background: linear-gradient(90deg, #f8fbff, transparent); }
+        .oc-fade-right { right: 0; background: linear-gradient(270deg, #f8fbff, transparent); }
 
-        /* Dot */
         .oc-dot {
           height: 6px;
           border-radius: 100px;
-          transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+          transition: all 0.4s ease;
           cursor: pointer;
           border: none;
         }
         .oc-dot.active {
           width: 24px;
-          background: linear-gradient(90deg, #219AEA, #2357A6);
-          box-shadow: 0 2px 8px rgba(33,154,234,0.3);
+          background: #219AEA;
         }
         .oc-dot.inactive {
           width: 6px;
           background: rgba(33,154,234,0.2);
         }
+
+        .oc-name {
+          margin-top: 12px;
+          text-align: center;
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: #1e293b;
+          opacity: 0.7;
+          transition: opacity 0.3s ease;
+        }
+        .oc-slide:hover .oc-name {
+          opacity: 1;
+        }
       `}</style>
 
-      <section className="oc-root oc-section py-20 sm:py-24">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 text-center relative z-10">
-          {/* ── Header ── */}
-          <div className="mb-14">
+      <section className="oc-root oc-section py-16 sm:py-24">
+        <div className="max-w-8xl mx-auto px-4 sm:px-8 text-center relative z-10">
+          <div className="mb-10 sm:mb-14">
             <div className="oc-eyebrow">Arksh Group</div>
-
             <h2
-              className="oc-display font-bold text-[#0f1e3c] leading-tight"
-              style={{ fontSize: 'clamp(2.2rem, 4.5vw, 3.6rem)' }}
+              className="oc-display font-bold text-[#0f1e3c] leading-tight mb-4"
+              style={{ fontSize: 'clamp(1.8rem, 5vw, 3.2rem)' }}
             >
-              Our{' '}
-              <span
-                style={{
-                  background: 'linear-gradient(135deg, #219AEA, #2357A6)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                Companies
-              </span>
+              Our <span className="text-[#219AEA]">Companies</span>
             </h2>
-
-            <div className="oc-ornament">
-              <div className="oc-orn-line" />
-              <div className="oc-orn-diamond" />
-              <div className="oc-orn-line r" />
-            </div>
-
-            <p
-              className="text-[#2357A6] font-medium"
-              style={{ fontSize: '0.82rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}
-            >
-              Discover our associated companies
+            <p className="text-slate-500 text-xs sm:text-sm tracking-widest uppercase">
+              Associated partners & subsidiaries
             </p>
           </div>
 
-          {/* ── Carousel ── */}
           <div className="relative overflow-hidden">
-            {/* Fade edges */}
-            <div className="oc-fade-left" />
-            <div className="oc-fade-right" />
+            <div className="oc-fade-left hidden sm:block" />
+            <div className="oc-fade-right hidden sm:block" />
 
             <div
               className="flex transition-transform duration-700 ease-in-out"
@@ -280,43 +195,43 @@ export default function OurCompanies() {
               {extendedCompanies.map((company, index) => (
                 <div
                   key={`${company.id}-${index}`}
+                  className="oc-slide shrink-0 px-2 sm:px-4"
                   style={{ width: `${translatePercentage}%` }}
-                  className="shrink-0 px-3 sm:px-4"
                 >
-                  <div className="oc-logo-card" style={{ height: 'clamp(120px, 14vw, 160px)' }}>
-                    <Image
-                      src={company.logo.url}
-                      alt={company.name}
-                      fill
-                      className="object-contain p-5 sm:p-6 md:p-7 transition-transform duration-500 hover:scale-105"
-                    />
+                  <div className="oc-card-wrap">
+                    <div
+                      className="oc-logo-container"
+                      /* Increased height for small/medium: from 100px to 130px minimum */
+                      style={{ height: 'clamp(130px, 16vw, 160px)' }}
+                    >
+                      <div className="relative w-full h-full p-3 sm:p-5 md:p-6">
+                        <Image
+                          src={company.logo.url}
+                          alt={company.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
+                    </div>
                   </div>
-
-                  {/* Company name below card */}
-                  <p
-                    className="mt-3 text-center text-[#2357A6] font-medium truncate px-1"
-                    style={{ fontSize: '0.72rem', letterSpacing: '0.06em', opacity: 0.7 }}
-                  >
-                    {company.name}
-                  </p>
+                  <p className="oc-name truncate px-2">{company.name}</p>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* ── Dots + Counter ── */}
           <div className="flex flex-col items-center gap-3 mt-10">
-            <div className="flex items-center gap-2 flex-wrap justify-center">
+            <div className="flex items-center gap-2">
               {companies.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setCurrentIndex(idx)}
                   className={`oc-dot ${currentIndex === idx ? 'active' : 'inactive'}`}
-                  aria-label={`Go to company ${idx + 1}`}
+                  aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
             </div>
-            <span className="oc-counter">
+            <span className="text-[10px] sm:text-xs font-medium text-slate-400 tracking-tighter">
               {String(currentIndex + 1).padStart(2, '0')} /{' '}
               {String(companies.length).padStart(2, '0')}
             </span>

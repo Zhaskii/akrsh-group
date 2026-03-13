@@ -138,7 +138,7 @@ export default function Footer() {
           <div className="w-8 h-0.5 bg-linear-to-r from-white/60 to-transparent rounded-full mb-6" />
           <div className="rounded-2xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.25)] w-full h-75 border border-white/10">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.86595561561!2d85.3204!3d27.72!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjfCsDQzJzEyLjAiTiA4NcKwMTknMTMuNCJF!5e0!3m2!1sen!2snp!4v1645000000000!5m2!1sen!2snp"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3531.7063399626504!2d85.31907747568266!3d27.7263518246527!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39eb1918569c8961%3A0x5f43dd27a908ad94!2sArksh%20Group!5e0!3m2!1sen!2snp!4v1773384215008!5m2!1sen!2snp"
               width="100%"
               height="100%"
               style={{ border: 0 }}

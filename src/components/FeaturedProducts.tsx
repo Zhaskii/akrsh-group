@@ -12,14 +12,11 @@ interface FeaturedProduct {
   order: number
 }
 
-// Custom hook to handle reliable intervals in React
 function useInterval(callback: () => void, delay: number | null) {
   const savedCallback = useRef(callback)
-
   useEffect(() => {
     savedCallback.current = callback
   }, [callback])
-
   useEffect(() => {
     if (delay !== null) {
       const id = setInterval(() => savedCallback.current(), delay)
@@ -31,10 +28,10 @@ function useInterval(callback: () => void, delay: number | null) {
 export default function FeaturedProducts() {
   const [products, setProducts] = useState<FeaturedProduct[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
+  const isPaused = false // slideshow never pauses on hover
   const [mounted, setMounted] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [itemsToShow, setItemsToShow] = useState(3)
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,46 +49,53 @@ export default function FeaturedProducts() {
     fetchProducts()
   }, [])
 
-  const handleNext = useCallback(() => {
-    if (products.length <= 1 || isTransitioning) return
+  useEffect(() => {
+    const update = () => {
+      setItemsToShow(window.innerWidth >= 768 ? 3 : 1)
+    }
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
+  }, [])
 
-    setIsTransitioning(true)
-    setCurrentIndex((prev) => (prev + 1) % products.length)
+  const currentIndexRef = useRef(currentIndex)
+  useEffect(() => {
+    currentIndexRef.current = currentIndex
+  }, [currentIndex])
 
-    setTimeout(() => {
-      setIsTransitioning(false)
-    }, 500)
-  }, [products.length, isTransitioning])
+  // Logic to determine the maximum index allowed to prevent white space
+  const maxIndex = Math.max(0, products.length - itemsToShow)
+
+  const advance = useCallback(() => {
+    setCurrentIndex((prev) => {
+      // If we are at the end, jump back to start, otherwise go forward
+      if (prev >= maxIndex) return 0
+      return prev + 1
+    })
+  }, [maxIndex])
+
+  useInterval(advance, !isPaused && mounted && products.length > itemsToShow ? 3000 : null)
+
+  const goTo = (idx: number) => {
+    // Ensure we don't go past the white-space limit
+    setCurrentIndex(Math.min(idx, maxIndex))
+  }
 
   const handlePrev = useCallback(() => {
-    if (products.length <= 1 || isTransitioning) return
+    if (products.length <= 1) return
+    setCurrentIndex((prev) => {
+      if (prev <= 0) return maxIndex
+      return prev - 1
+    })
+  }, [products.length, maxIndex])
 
-    setIsTransitioning(true)
-    setCurrentIndex((prev) => (prev - 1 + products.length) % products.length)
-
-    setTimeout(() => {
-      setIsTransitioning(false)
-    }, 500)
-  }, [products.length, isTransitioning])
-
-  // FIXED: Reliable Auto-slideshow using the custom hook
-  useInterval(
-    () => {
-      handleNext()
-    },
-    !isPaused && mounted && products.length > 1 ? 3000 : null,
-  )
-
-  const getVisibleImages = () => {
-    if (products.length === 0) return []
-    const visible = []
-    const imagesToShow =
-      typeof window !== 'undefined' && window.innerWidth >= 768 ? Math.min(3, products.length) : 1
-    for (let i = 0; i < imagesToShow; i++) {
-      visible.push(products[(currentIndex + i) % products.length])
-    }
-    return visible
-  }
+  const handleNext = useCallback(() => {
+    if (products.length <= 1) return
+    setCurrentIndex((prev) => {
+      if (prev >= maxIndex) return 0
+      return prev + 1
+    })
+  }, [products.length, maxIndex])
 
   if (!mounted || loading) {
     return (
@@ -212,6 +216,19 @@ export default function FeaturedProducts() {
           transform: scale(1.08);
         }
 
+        .fp-track-wrapper {
+          overflow: hidden;
+          border-radius: 18px;
+        }
+        .fp-track {
+          display: flex;
+          transition: transform 0.65s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          will-change: transform;
+        }
+        .fp-slide {
+          flex-shrink: 0;
+        }
+
         .fp-img-card {
           position: relative;
           border-radius: 18px;
@@ -219,6 +236,8 @@ export default function FeaturedProducts() {
           box-shadow: 0 8px 32px rgba(35,87,166,0.12), 0 2px 8px rgba(0,0,0,0.06);
           border: 1px solid rgba(255,255,255,0.8);
           transition: box-shadow 0.4s ease, transform 0.4s ease;
+          width: 100%;
+          height: 100%;
         }
         .fp-img-card:hover {
           box-shadow: 0 20px 52px rgba(33,154,234,0.18), 0 4px 16px rgba(0,0,0,0.1);
@@ -240,6 +259,9 @@ export default function FeaturedProducts() {
           width: 8px;
           background: rgba(33,154,234,0.2);
         }
+        .fp-dot.inactive:hover {
+          background: rgba(33,154,234,0.4);
+        }
 
         .fp-counter {
           font-family: 'Cormorant Garamond', serif;
@@ -249,15 +271,10 @@ export default function FeaturedProducts() {
         }
       `}</style>
 
-      <section
-        className="fp-root fp-section py-20 sm:py-24 w-full"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
+      <section className="fp-root fp-section py-20 sm:py-24 w-full">
         <div className="w-full px-5 sm:px-8 relative z-10">
           <div className="text-center mb-14">
             <div className="fp-eyebrow">Arksh Group</div>
-
             <h2
               className="fp-display font-bold text-[#0f1e3c] leading-tight"
               style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)' }}
@@ -270,10 +287,9 @@ export default function FeaturedProducts() {
                   WebkitTextFillColor: 'transparent',
                 }}
               >
-                Products & Services
+                Products &amp; Services
               </span>
             </h2>
-
             <div className="fp-ornament">
               <div className="fp-orn-line" />
               <div className="fp-orn-diamond" />
@@ -300,29 +316,38 @@ export default function FeaturedProducts() {
               </svg>
             </button>
 
-            <div
-              className={`flex gap-4 sm:gap-6 transition-all duration-500 ease-in-out ${
-                isTransitioning
-                  ? 'opacity-30 scale-[0.985] blur-[1px]'
-                  : 'opacity-100 scale-100 blur-0'
-              }`}
-            >
-              {getVisibleImages().map((product, idx) => (
-                <div
-                  key={`${product.id}-${idx}`}
-                  className="fp-img-card relative w-full"
-                  style={{ height: 'clamp(280px, 35vw, 480px)' }}
-                >
-                  <Image
-                    src={product.image.url}
-                    alt={product.image.alt || 'Featured Product'}
-                    fill
-                    className="object-fill transition-transform duration-700 hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    priority={currentIndex === 0}
-                  />
-                </div>
-              ))}
+            <div className="fp-track-wrapper" style={{ height: 'clamp(280px, 35vw, 480px)' }}>
+              <div
+                className="fp-track h-full"
+                style={{
+                  transform: `translateX(calc(-${currentIndex * (100 / itemsToShow)}% - ${currentIndex * (itemsToShow > 1 ? 24 : 0)}px))`,
+                  gap: itemsToShow > 1 ? '24px' : '0px',
+                }}
+              >
+                {products.map((product, idx) => (
+                  <div
+                    key={product.id}
+                    className="fp-slide h-full"
+                    style={{
+                      width:
+                        itemsToShow > 1
+                          ? `calc(${100 / itemsToShow}% - ${(24 * (itemsToShow - 1)) / itemsToShow}px)`
+                          : '100%',
+                    }}
+                  >
+                    <div className="fp-img-card">
+                      <Image
+                        src={product.image.url}
+                        alt={product.image.alt || 'Featured Product'}
+                        fill
+                        className="object-fill"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        priority={idx === 0}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <button
@@ -344,25 +369,20 @@ export default function FeaturedProducts() {
             </button>
           </div>
 
-          <div className="flex flex-col items-center gap-4 mt-12">
+          <div className="flex flex-col items-center gap-4 mt-8">
             <div className="flex items-center gap-2">
-              {products.map((_, idx) => (
+              {/* Only show dots for valid index positions to prevent white space jumps */}
+              {products.slice(0, maxIndex + 1).map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => {
-                    if (currentIndex === idx || isTransitioning) return
-                    setIsTransitioning(true)
-                    setCurrentIndex(idx)
-                    setTimeout(() => setIsTransitioning(false), 500)
-                  }}
+                  onClick={() => goTo(idx)}
                   className={`fp-dot ${currentIndex === idx ? 'active' : 'inactive'}`}
                   aria-label={`Go to slide ${idx + 1}`}
                 />
               ))}
             </div>
             <span className="fp-counter">
-              {String(currentIndex + 1).padStart(2, '0')} /{' '}
-              {String(products.length).padStart(2, '0')}
+              {String(currentIndex + 1).padStart(2, '0')} / {String(maxIndex + 1).padStart(2, '0')}
             </span>
           </div>
         </div>

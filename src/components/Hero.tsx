@@ -19,6 +19,7 @@ import hero14 from '@/assets/heroBg/Luxury-BG.jpg'
 import hero15 from '@/assets/heroBg/MacCoffee-BG.jpg'
 import hero17 from '@/assets/heroBg/Nirvana-BG2.jpg'
 import hero18 from '@/assets/heroBg/Urban-Earth-BG.jpg'
+import lumbiniBG from '@/assets/heroBG/Celebrating-45-years.jpg'
 
 const HERO_IMAGES = [
   hero1,
@@ -274,7 +275,7 @@ export default function Hero() {
           letter-spacing: 0.08em;
         }
 
-        /* CTA */
+        /* CTA - Fixed Text Layering */
         .cta-primary {
           position: relative;
           background: linear-gradient(135deg, #219AEA 0%, #2357A6 100%);
@@ -288,20 +289,26 @@ export default function Hero() {
           overflow: hidden;
           transition: all 0.3s ease;
           display: inline-block;
-          border: none; cursor: pointer;
+          border: none; 
+          cursor: pointer;
+          z-index: 1;
         }
-        .cta-primary::after {
+        .cta-primary::before {
           content: '';
-          position: absolute; inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent);
+          position: absolute; 
+          inset: 0;
+          background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
           opacity: 0;
-          transition: opacity 0.3s;
+          transition: opacity 0.3s ease;
+          z-index: -1;
         }
         .cta-primary:hover {
           box-shadow: 0 12px 36px rgba(33,154,234,0.42);
           transform: translateY(-2px);
         }
-        .cta-primary:hover::after { opacity: 1; }
+        .cta-primary:hover::before { 
+          opacity: 1; 
+        }
 
         .secondary-link {
           display: inline-flex; align-items: center; gap: 6px;
@@ -393,7 +400,6 @@ export default function Hero() {
           {/* Bottom HUD */}
           <div className="absolute bottom-0 left-0 right-0 z-30 px-5 sm:px-10 md:px-14 pb-5 sm:pb-7">
             <div className="max-w-7xl mx-auto flex items-end justify-between gap-6">
-              {/* Progress bar + counter */}
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className="slide-counter shrink-0">
                   {String(currentImageIndex + 1).padStart(2, '0')} /{' '}
@@ -404,7 +410,6 @@ export default function Hero() {
                 </div>
               </div>
 
-              {/* Dot indicators */}
               <div className="flex items-center gap-1.5">
                 {HERO_IMAGES.map((_, i) => (
                   <button
@@ -416,7 +421,6 @@ export default function Hero() {
                 ))}
               </div>
 
-              {/* Nav arrows */}
               <div className="flex items-center gap-2 shrink-0">
                 <button onClick={prevSlide} className="nav-btn" aria-label="Previous">
                   <ChevronLeftIcon className="w-4 h-4" />
@@ -433,10 +437,64 @@ export default function Hero() {
         <section className="content-section w-full py-14 sm:py-18 md:py-22 lg:py-28 overflow-hidden">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 md:px-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-center">
-              {/* ── Left ── */}
+              {/* ── Right Image (First on Mobile) ── */}
+              <div
+                ref={rightRef}
+                className="image-card order-1 md:order-2"
+                style={{
+                  aspectRatio: '4 / 3',
+                  opacity: rightInView ? 1 : 0,
+                  transform: rightInView
+                    ? 'translateY(0) scale(1)'
+                    : 'translateY(24px) scale(0.98)',
+                  transition:
+                    'opacity 0.9s 0.2s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.9s 0.2s cubic-bezier(0.25,0.46,0.45,0.94)',
+                }}
+              >
+                <div
+                  className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-[1.04]"
+                  style={{
+                    backgroundImage: `url(${lumbiniBG.src})`,
+                  }}
+                />
+
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      'linear-gradient(135deg, rgba(33,154,234,0.06), rgba(35,87,166,0.1))',
+                  }}
+                />
+
+                <div className="corner-tl" />
+                <div className="corner-br" />
+
+                <div className="image-badge">
+                  <div className="badge-dot" />
+                  <span
+                    style={{
+                      fontSize: '0.72rem',
+                      fontWeight: 600,
+                      color: '#0f1e3c',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
+                    Celebrating 45 Years
+                  </span>
+                </div>
+
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
+                  style={{
+                    background: 'linear-gradient(to top, rgba(10,20,50,0.25), transparent)',
+                  }}
+                />
+              </div>
+
+              {/* ── Left Content (Second on Mobile) ── */}
               <div
                 ref={leftRef}
-                className="max-w-xl"
+                className="max-w-xl order-2 md:order-1"
                 style={{
                   opacity: leftInView ? 1 : 0,
                   transform: leftInView ? 'translateY(0)' : 'translateY(32px)',
@@ -444,7 +502,6 @@ export default function Hero() {
                     'opacity 0.8s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94)',
                 }}
               >
-                {/* Badge */}
                 <div className="year-badge">
                   <span className="year-pill">Est. 1978</span>
                   <span
@@ -459,7 +516,6 @@ export default function Hero() {
                   </span>
                 </div>
 
-                {/* Headline */}
                 <h1
                   className="display-font font-bold mb-3 leading-[1.1] text-[#0f1e3c]"
                   style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)' }}
@@ -492,15 +548,7 @@ export default function Hero() {
                   objective of trade and hospitality business.
                 </p>
 
-                {/* Stats */}
-                <div
-                  className="flex items-center my-7"
-                  style={{
-                    opacity: leftInView ? 1 : 0,
-                    transform: leftInView ? 'translateY(0)' : 'translateY(16px)',
-                    transition: 'opacity 0.8s 0.2s ease, transform 0.8s 0.2s ease',
-                  }}
-                >
+                <div className="flex items-center my-7">
                   {[
                     { value: '45+', label: 'Years' },
                     { value: '15+', label: 'Companies' },
@@ -533,19 +581,11 @@ export default function Hero() {
                   ))}
                 </div>
 
-                {/* CTAs */}
-                <div
-                  className="flex items-center gap-6 flex-wrap"
-                  style={{
-                    opacity: leftInView ? 1 : 0,
-                    transform: leftInView ? 'translateY(0)' : 'translateY(16px)',
-                    transition: 'opacity 0.8s 0.35s ease, transform 0.8s 0.35s ease',
-                  }}
-                >
+                <div className="flex items-center gap-6 flex-wrap">
                   <Link href="/about">
                     <button className="cta-primary">Discover Our Story</button>
                   </Link>
-                  <Link href="/companies" className="secondary-link">
+                  <Link href="/companies-brands" className="secondary-link">
                     Our Companies
                     <svg
                       width="14"
@@ -561,65 +601,6 @@ export default function Hero() {
                     </svg>
                   </Link>
                 </div>
-              </div>
-
-              {/* ── Right Image ── */}
-              <div
-                ref={rightRef}
-                className="image-card"
-                style={{
-                  aspectRatio: '4 / 3',
-                  opacity: rightInView ? 1 : 0,
-                  transform: rightInView
-                    ? 'translateY(0) scale(1)'
-                    : 'translateY(24px) scale(0.98)',
-                  transition:
-                    'opacity 0.9s 0.2s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.9s 0.2s cubic-bezier(0.25,0.46,0.45,0.94)',
-                }}
-              >
-                <div
-                  className="w-full h-full bg-cover bg-center transition-transform duration-700 hover:scale-[1.04]"
-                  style={{
-                    backgroundImage:
-                      "url('https://arkshgroup.com/uploads/about/Lumbini-celebrating-45-years-copy.jpg')",
-                  }}
-                />
-
-                {/* Subtle color overlay */}
-                <div
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      'linear-gradient(135deg, rgba(33,154,234,0.06), rgba(35,87,166,0.1))',
-                  }}
-                />
-
-                {/* Corner brackets */}
-                <div className="corner-tl" />
-                <div className="corner-br" />
-
-                {/* Floating badge */}
-                <div className="image-badge">
-                  <div className="badge-dot" />
-                  <span
-                    style={{
-                      fontSize: '0.72rem',
-                      fontWeight: 600,
-                      color: '#0f1e3c',
-                      letterSpacing: '0.05em',
-                    }}
-                  >
-                    Celebrating 45 Years
-                  </span>
-                </div>
-
-                {/* Gradient bottom fade */}
-                <div
-                  className="absolute bottom-0 left-0 right-0 h-1/3 pointer-events-none"
-                  style={{
-                    background: 'linear-gradient(to top, rgba(10,20,50,0.25), transparent)',
-                  }}
-                />
               </div>
             </div>
           </div>
