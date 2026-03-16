@@ -76,7 +76,7 @@ export default function CompaniesBrands() {
                   className={`relative px-7 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
                     activeTab === tab
                       ? 'bg-linear-to-r from-[#2357A6] to-[#3498db] text-white shadow-[0_4px_16px_rgba(52,152,219,0.30)]'
-                      : 'text-[#1a3a6e] hover:bg-blue-50 hover:text-[#3498db]'
+                      : 'text-[#1a3a6e] hover:bg-blue-50 hover:text-[#3498db] cursor-pointer'
                   }`}
                 >
                   {tab === 'companies' ? 'Associated Companies' : 'Associated Brands'}

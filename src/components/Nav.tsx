@@ -31,7 +31,7 @@ const Nav: React.FC = () => {
             <li>
               <Link href="/admin/collections/social-videos">
                 <span className="nav-icon">📁</span>
-                Social Videos
+                Social Videos (Arksh Help)
               </Link>
             </li>
             <li>
@@ -144,7 +144,7 @@ const Nav: React.FC = () => {
               <li>
                 <Link href="/admin/collections/applications">
                   <span className="nav-icon">👨‍💻</span>
-                  Applications
+                  Career Applications
                 </Link>
               </li>
             </ul>

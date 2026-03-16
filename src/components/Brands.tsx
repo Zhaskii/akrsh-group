@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 
 interface Brand {
@@ -17,6 +17,9 @@ export default function OurBrands() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [loading, setLoading] = useState(true)
   const [itemsToShow, setItemsToShow] = useState(5)
+  const isTransitioning = useRef(false)
+  const autoplayRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const pauseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const fetchBrands = async () => {
@@ -36,27 +39,58 @@ export default function OurBrands() {
   useEffect(() => {
     const handleResize = () => {
       const w = window.innerWidth
-      // Optimized breakpoints to remove excessive white space on small/medium screens
-      if (w < 480)
-        setItemsToShow(2) // Mobile: 2 items avoids huge stretched cards
-      else if (w < 768)
-        setItemsToShow(3) // Tablet
-      else if (w < 1024)
-        setItemsToShow(4) // Small Desktop
-      else setItemsToShow(5) // Large Desktop
+      if (w < 480) setItemsToShow(2)
+      else if (w < 768) setItemsToShow(3)
+      else if (w < 1024) setItemsToShow(4)
+      else setItemsToShow(5)
     }
     handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  useEffect(() => {
-    if (brands.length <= itemsToShow) return
-    const interval = setInterval(() => {
+  const startAutoplay = () => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current)
+    autoplayRef.current = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1 >= brands.length ? 0 : prev + 1))
     }, 2500)
-    return () => clearInterval(interval)
+  }
+
+  useEffect(() => {
+    if (brands.length <= itemsToShow) return
+    startAutoplay()
+    return () => {
+      if (autoplayRef.current) clearInterval(autoplayRef.current)
+    }
   }, [brands.length, itemsToShow])
+
+  const pauseThenResume = () => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current)
+    if (pauseTimeoutRef.current) clearTimeout(pauseTimeoutRef.current)
+    pauseTimeoutRef.current = setTimeout(() => {
+      if (brands.length > itemsToShow) startAutoplay()
+    }, 4000)
+  }
+
+  const handlePrev = () => {
+    if (isTransitioning.current) return
+    isTransitioning.current = true
+    setCurrentIndex((prev) => (prev - 1 + brands.length) % brands.length)
+    setTimeout(() => {
+      isTransitioning.current = false
+    }, 700)
+    pauseThenResume()
+  }
+
+  const handleNext = () => {
+    if (isTransitioning.current) return
+    isTransitioning.current = true
+    setCurrentIndex((prev) => (prev + 1) % brands.length)
+    setTimeout(() => {
+      isTransitioning.current = false
+    }, 700)
+    pauseThenResume()
+  }
 
   if (loading) {
     return (
@@ -108,7 +142,7 @@ export default function OurBrands() {
           opacity: 0.5;
         }
 
-        /* Clean card: Removed the glitchy blue top border bar */
+        /* Card */
         .ob-card-wrap {
           position: relative;
           border-radius: 18px;
@@ -118,7 +152,6 @@ export default function OurBrands() {
           border: 1px solid rgba(33,154,234,0.1);
           overflow: hidden;
         }
-
         .ob-card-wrap:hover {
           transform: translateY(-6px);
           box-shadow: 0 16px 32px rgba(33,154,234,0.12);
@@ -134,12 +167,45 @@ export default function OurBrands() {
           background: white;
         }
 
+        /* Nav buttons - Updated to match BG */
+        .ob-nav-btn {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          z-index: 20;
+          width: 42px;
+          height: 42px;
+          border-radius: 50%;
+          background: transparent; /* Changed to transparent to let BG flow through */
+          border: 1.5px solid rgba(33,154,234,0.22);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #219AEA;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        .ob-nav-btn:hover {
+          background: linear-gradient(135deg, #219AEA, #2357A6);
+          border-color: transparent;
+          color: white;
+          box-shadow: 0 8px 24px rgba(33,154,234,0.32);
+          transform: translateY(-50%) scale(1.1);
+        }
+        .ob-nav-btn:active {
+          transform: translateY(-50%) scale(0.96);
+        }
+        .ob-nav-btn.left  { left: -21px; }
+        .ob-nav-btn.right { right: -21px; }
+
+        /* Fade edges */
         .ob-fade-left, .ob-fade-right {
           position: absolute; top: 0; bottom: 0; width: 60px; z-index: 10; pointer-events: none;
         }
-        .ob-fade-left { left: 0; background: linear-gradient(90deg, #f8fbff, transparent); }
-        .ob-fade-right { right: 0; background: linear-gradient(270deg, #f8fbff, transparent); }
+        .ob-fade-left  { left: 0;  background: linear-gradient(90deg,  #f8fbff, transparent); }
+        .ob-fade-right { right: 0; background: linear-gradient(270deg, #eaf3fd, transparent); }
 
+        /* Dots */
         .ob-dot {
           height: 6px;
           border-radius: 100px;
@@ -147,15 +213,11 @@ export default function OurBrands() {
           cursor: pointer;
           border: none;
         }
-        .ob-dot.active {
-          width: 24px;
-          background: #219AEA;
-        }
-        .ob-dot.inactive {
-          width: 6px;
-          background: rgba(33,154,234,0.2);
-        }
+        .ob-dot.active   { width: 24px; background: #219AEA; }
+        .ob-dot.inactive { width: 6px;  background: rgba(33,154,234,0.2); }
+        .ob-dot.inactive:hover { background: rgba(33,154,234,0.4); }
 
+        /* Name */
         .ob-name {
           margin-top: 12px;
           text-align: center;
@@ -163,15 +225,14 @@ export default function OurBrands() {
           font-weight: 500;
           color: #1e293b;
           opacity: 0.7;
-          transition: opacity 0.3s ease;
+          transition: opacity 0.3s ease, color 0.3s ease;
         }
-        .ob-slide:hover .ob-name {
-          opacity: 1;
-        }
+        .ob-slide:hover .ob-name { opacity: 1; color: #219AEA; }
       `}</style>
 
       <section className="ob-root ob-section py-16 sm:py-24">
         <div className="max-w-8xl mx-auto px-4 sm:px-8 text-center relative z-10">
+          {/* Header */}
           <div className="mb-10 sm:mb-14">
             <div className="ob-eyebrow">Arksh Group</div>
             <h2
@@ -181,48 +242,85 @@ export default function OurBrands() {
               Our <span className="text-[#219AEA]">Brands</span>
             </h2>
             <p className="text-slate-500 text-xs sm:text-sm tracking-widest uppercase">
-              Discover our latest brands & products
+              Discover our latest brands &amp; products
             </p>
           </div>
 
-          <div className="relative overflow-hidden">
+          {/* Carousel */}
+          <div className="relative overflow-visible px-8">
+            {/* Fade edges */}
             <div className="ob-fade-left hidden sm:block" />
             <div className="ob-fade-right hidden sm:block" />
 
-            <div
-              className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentIndex * translatePercentage}%)` }}
-            >
-              {extendedBrands.map((brand, index) => (
-                <div
-                  key={`${brand.id}-${index}`}
-                  className="ob-slide shrink-0 px-2 sm:px-4"
-                  style={{ width: `${translatePercentage}%` }}
-                >
-                  <div className="ob-card-wrap">
-                    <div
-                      className="ob-logo-container"
-                      /* Increased height for mobile/tablet */
-                      style={{ height: 'clamp(130px, 16vw, 160px)' }}
-                    >
-                      <div className="relative w-full h-full p-3 sm:p-5 md:p-6">
-                        <Image
-                          src={brand.logo.url}
-                          alt={brand.name}
-                          fill
-                          className="object-contain transition-transform duration-500 hover:scale-105"
-                        />
+            {/* Prev button */}
+            <button className="ob-nav-btn left" onClick={handlePrev} aria-label="Previous brands">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
+            {/* Track */}
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-700 ease-in-out"
+                style={{ transform: `translateX(-${currentIndex * translatePercentage}%)` }}
+              >
+                {extendedBrands.map((brand, index) => (
+                  <div
+                    key={`${brand.id}-${index}`}
+                    className="ob-slide shrink-0 px-2 sm:px-3"
+                    style={{ width: `${translatePercentage}%` }}
+                  >
+                    <div className="ob-card-wrap">
+                      <div
+                        className="ob-logo-container"
+                        style={{ height: 'clamp(130px, 16vw, 160px)' }}
+                      >
+                        <div className="relative w-full h-full p-3 sm:p-5 md:p-6">
+                          <Image
+                            src={brand.logo.url}
+                            alt={brand.name}
+                            fill
+                            className="object-contain transition-transform duration-500 hover:scale-105"
+                          />
+                        </div>
                       </div>
                     </div>
+                    <p className="ob-name truncate px-2">{brand.name}</p>
                   </div>
-                  <p className="ob-name truncate px-2">{brand.name}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
+
+            {/* Next button */}
+            <button className="ob-nav-btn right" onClick={handleNext} aria-label="Next brands">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
           </div>
 
+          {/* Dots + counter */}
           <div className="flex flex-col items-center gap-3 mt-10">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap justify-center">
               {brands.map((_, idx) => (
                 <button
                   key={idx}
